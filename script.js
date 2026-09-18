@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Accept: "application/json",
           },
           body: JSON.stringify({
-            access_key: "f7c9e0d8-1b2a-4f3e-8c9a-7d6e5f4a3b2c", // Public client key identifier
+            access_key: "883b3ee0-5acd-42e7-a38c-452f2c0443ca", // Web3Forms public client key
             to: "aryan21sharma04@gmail.com",
             from_name: name,
             email: email,
