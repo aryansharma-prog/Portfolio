@@ -8,7 +8,16 @@ mongoose.set("bufferTimeoutMS", 3000);
 
 const connectDB = async () => {
   const rawUri = process.env.MONGODB_URI;
-  const uri = rawUri && rawUri.trim() !== "" ? rawUri.trim() : null;
+  let uri = rawUri && rawUri.trim() !== "" ? rawUri.trim() : null;
+
+  if (uri) {
+    // Strip accidental leading double-m typos (e.g. mmongodb+srv://)
+    if (uri.startsWith("mmongodb+srv://")) {
+      uri = "mongodb+srv://" + uri.substring(15);
+    } else if (uri.startsWith("mmongodb://")) {
+      uri = "mongodb://" + uri.substring(11);
+    }
+  }
 
   if (isConnected || !uri) {
     if (!uri) {
