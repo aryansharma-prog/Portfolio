@@ -2,38 +2,47 @@ const nodemailer = require("nodemailer");
 
 /**
  * Creates and returns a Nodemailer transporter based on current environment variables.
- * Supports Gmail, custom SMTP, Resend/SendGrid/Postmark SMTP, or test transporter.
+ * Configures robust socket and connection timeouts so slow/hanging networks fail-fast.
  */
 const createTransporter = async () => {
-  const host = process.env.SMTP_HOST;
-  const port = parseInt(process.env.SMTP_PORT || "587", 10);
+  const host = process.env.SMTP_HOST ? process.env.SMTP_HOST.trim() : null;
+  const port = parseInt(process.env.SMTP_PORT || "465", 10);
   const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : "";
   const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, "") : "";
   const secure = process.env.SMTP_SECURE === "true" || port === 465;
 
+  const timeouts = {
+    connectionTimeout: 6000, // 6s connection timeout
+    greetingTimeout: 6000,   // 6s greeting timeout
+    socketTimeout: 8000,     // 8s socket timeout
+  };
+
   if (user && pass) {
-    if (host) {
+    // If Gmail service or smtp.gmail.com
+    if (!host || host.includes("gmail.com") || process.env.SMTP_SERVICE === "gmail") {
       return nodemailer.createTransport({
-        host,
-        port,
-        secure,
+        service: "gmail",
         auth: {
           user,
           pass,
         },
-        tls: {
-          rejectUnauthorized: process.env.NODE_ENV === "production",
-        },
+        ...timeouts,
       });
     }
 
-    // Default to Gmail service if user/pass provided without specific host
+    // Custom SMTP Provider (Resend, SendGrid, Postmark, AWS SES, etc.)
     return nodemailer.createTransport({
-      service: "gmail",
+      host,
+      port,
+      secure,
       auth: {
         user,
         pass,
       },
+      tls: {
+        rejectUnauthorized: process.env.NODE_ENV === "production",
+      },
+      ...timeouts,
     });
   }
 
@@ -41,7 +50,7 @@ const createTransporter = async () => {
   if (process.env.NODE_ENV !== "production") {
     try {
       const testAccount = await nodemailer.createTestAccount();
-      console.log("[Email Service] Initialized dev fallback test account via Ethereal");
+      console.log("[Email Service] Initialized dev test account via Ethereal");
       return nodemailer.createTransport({
         host: "smtp.ethereal.email",
         port: 587,
@@ -50,6 +59,7 @@ const createTransporter = async () => {
           user: testAccount.user,
           pass: testAccount.pass,
         },
+        ...timeouts,
       });
     } catch (err) {
       console.warn("[Email Service] Could not generate test account. Falling back to console logger.");
@@ -69,7 +79,7 @@ const sendContactNotification = async ({ name, email, subject, message, createdA
   const fromEmail =
     process.env.EMAIL_FROM ||
     process.env.SMTP_USER ||
-    '"Portfolio Notifications" <no-reply@aryansharma.dev>';
+    '"Portfolio Notifications" <aryan21sharma04@gmail.com>';
   const safeSubject = subject || `Inquiry from ${name}`;
   const timestamp = (createdAt ? new Date(createdAt) : new Date()).toLocaleString("en-US", {
     dateStyle: "full",
@@ -132,28 +142,6 @@ Received: ${timestamp}
       margin-bottom: 20px;
       border-left: 4px solid #06b6d4;
     }
-    .meta-row {
-      display: flex;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-    .meta-row:last-child {
-      margin-bottom: 0;
-    }
-    .meta-label {
-      width: 90px;
-      font-weight: 600;
-      color: #94a3b8;
-    }
-    .meta-value {
-      flex: 1;
-      color: #f1f5f9;
-      word-break: break-all;
-    }
-    .meta-value a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
     .message-box {
       background: #0f172a;
       border: 1px solid #334155;
@@ -208,15 +196,15 @@ Received: ${timestamp}
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
           <tr>
             <td style="padding: 4px 0; width: 90px; color: #94a3b8; font-weight: 600;">From:</td>
-            <td style="padding: 4px 0; color: #f1f5f9; font-weight: 600;">${name}</td>
+            <td style="padding: 4px 0; color: #f1f5f9; font-weight: 600;">${escapeHtml(name)}</td>
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #94a3b8; font-weight: 600;">Email:</td>
-            <td style="padding: 4px 0; color: #38bdf8;"><a href="mailto:${email}" style="color: #38bdf8; text-decoration: none;">${email}</a></td>
+            <td style="padding: 4px 0; color: #38bdf8;"><a href="mailto:${escapeHtml(email)}" style="color: #38bdf8; text-decoration: none;">${escapeHtml(email)}</a></td>
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #94a3b8; font-weight: 600;">Subject:</td>
-            <td style="padding: 4px 0; color: #f1f5f9;">${safeSubject}</td>
+            <td style="padding: 4px 0; color: #f1f5f9;">${escapeHtml(safeSubject)}</td>
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #94a3b8; font-weight: 600;">Received:</td>
@@ -229,7 +217,7 @@ Received: ${timestamp}
       <div class="message-box">${escapeHtml(message)}</div>
 
       <div class="actions">
-        <a href="mailto:${email}?subject=Re:%20${encodeURIComponent(safeSubject)}" class="reply-btn">
+        <a href="mailto:${escapeHtml(email)}?subject=Re:%20${encodeURIComponent(safeSubject)}" class="reply-btn">
           Reply Directly to ${escapeHtml(name)} &rarr;
         </a>
       </div>
@@ -248,7 +236,7 @@ Received: ${timestamp}
 
     if (!transporter) {
       console.log("--------------------------------------------------");
-      console.log("[Email Service: Log Fallback]");
+      console.log("[Email Service: Log Fallback (Credentials not set)]");
       console.log(plainTextContent);
       console.log("--------------------------------------------------");
       return {
@@ -267,12 +255,14 @@ Received: ${timestamp}
       html: htmlContent,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`[Email Service] Notification sent successfully. Message ID: ${info.messageId}`);
+    // Send with a 7-second timeout guarantee
+    const sendPromise = transporter.sendMail(mailOptions);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Email dispatch timed out after 7 seconds")), 7000)
+    );
 
-    if (nodemailer.getTestMessageUrl(info)) {
-      console.log(`[Email Service] Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-    }
+    const info = await Promise.race([sendPromise, timeoutPromise]);
+    console.log(`[Email Service] Notification delivered successfully. Message ID: ${info.messageId}`);
 
     return {
       success: true,
@@ -280,7 +270,7 @@ Received: ${timestamp}
       previewUrl: nodemailer.getTestMessageUrl(info) || null,
     };
   } catch (error) {
-    console.error(`[Email Service] Failed to send email notification: ${error.message}`);
+    console.error(`[Email Service] Delivery notice: ${error.message}`);
     return {
       success: false,
       error: error.message,

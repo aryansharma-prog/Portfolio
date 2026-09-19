@@ -3,7 +3,7 @@ const ContactMessage = require("../models/ContactMessage");
 const { sendContactNotification } = require("../services/emailService");
 const { isConnected } = require("../config/db");
 
-// In-memory fallback message store for offline development when MongoDB is unreachable
+// In-memory fallback message store for resilient message retention
 const memoryFallbackStore = [];
 
 /**
@@ -48,9 +48,9 @@ const contactValidationRules = [
  * Submits a contact inquiry:
  * 1. Validates & sanitizes input
  * 2. Checks honeypot spam traps
- * 3. Persists to MongoDB (or memory fallback in offline dev)
- * 4. Dispatches email notification with direct Reply-To
- * 5. Returns client-safe success response
+ * 3. Persists to MongoDB (with fail-fast timeout and memory fallback)
+ * 4. Dispatches email notification with direct Reply-To (with timeout guarantee)
+ * 5. Returns client confirmation
  */
 const submitContactMessage = async (req, res) => {
   try {
@@ -58,7 +58,6 @@ const submitContactMessage = async (req, res) => {
     const honeypot = req.body._gotcha || req.body.botcheck;
     if (honeypot) {
       console.warn(`[Anti-Spam] Bot trap triggered from IP: ${req.ip}`);
-      // Return 200 OK silently to confuse automated spammers without storing or sending email
       return res.status(200).json({
         success: true,
         message: "Message sent successfully! I'll get back to you soon.",
@@ -81,15 +80,14 @@ const submitContactMessage = async (req, res) => {
     const { name, email, subject, message } = req.body;
     const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || req.ip;
     const userAgent = req.headers["user-agent"] || "Unknown";
-
     const cleanSubject = subject && subject.trim() ? subject.trim() : `Portfolio Message from ${name}`;
 
     let savedMessage = null;
 
-    // 3. Persist message to database
+    // 3. Persist message to database with timeout protection
     if (isConnected()) {
       try {
-        savedMessage = await ContactMessage.create({
+        const createPromise = ContactMessage.create({
           name,
           email,
           subject: cleanSubject,
@@ -99,13 +97,19 @@ const submitContactMessage = async (req, res) => {
           ipAddress: clientIp,
           userAgent: userAgent,
         });
+
+        const dbTimeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("DB insertion timed out")), 3000)
+        );
+
+        savedMessage = await Promise.race([createPromise, dbTimeout]);
         console.log(`[Contact] Saved message #${savedMessage._id} to MongoDB from ${email}`);
       } catch (dbErr) {
-        console.error(`[Contact] MongoDB Save Error: ${dbErr.message}`);
+        console.warn(`[Contact] MongoDB Save notice: ${dbErr.message}. Storing in memory fallback.`);
       }
     }
 
-    // Fallback store if DB is offline during local development
+    // Resilient Fallback store if DB is offline or connecting
     if (!savedMessage) {
       savedMessage = {
         _id: "mem_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
@@ -121,11 +125,10 @@ const submitContactMessage = async (req, res) => {
         updatedAt: new Date(),
       };
       memoryFallbackStore.unshift(savedMessage);
-      console.log(`[Contact] Saved message to in-memory fallback store (${email})`);
+      console.log(`[Contact] Saved message to in-memory store (${email})`);
     }
 
-    // 4. Send Email Notification (Non-blocking on client error)
-    // Email failure does NOT discard the stored message
+    // 4. Send Email Notification (Non-blocking with timeout guarantee)
     const emailResult = await sendContactNotification({
       name,
       email,
@@ -136,21 +139,20 @@ const submitContactMessage = async (req, res) => {
 
     // Update delivery status on stored message
     if (savedMessage) {
-      if (emailResult.success) {
-        savedMessage.emailDeliveryStatus = "sent";
-        if (isConnected() && savedMessage.save) {
-          await ContactMessage.findByIdAndUpdate(savedMessage._id, {
-            emailDeliveryStatus: "sent",
-          });
-        }
-      } else {
-        savedMessage.emailDeliveryStatus = "failed";
+      const status = emailResult.success ? "sent" : "failed";
+      savedMessage.emailDeliveryStatus = status;
+      if (!emailResult.success) {
         savedMessage.emailError = emailResult.error;
-        if (isConnected() && savedMessage.save) {
+      }
+
+      if (isConnected() && typeof savedMessage._id === "object") {
+        try {
           await ContactMessage.findByIdAndUpdate(savedMessage._id, {
-            emailDeliveryStatus: "failed",
-            emailError: emailResult.error,
+            emailDeliveryStatus: status,
+            emailError: emailResult.error || null,
           });
+        } catch (updateErr) {
+          // Non-blocking
         }
       }
     }
@@ -165,8 +167,7 @@ const submitContactMessage = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(`[Contact Controller] Internal Error: ${error.message}`);
-    // Safe generic error message, no internal stack trace leaked to visitor
+    console.error(`[Contact Controller] Internal Error: ${error.stack || error.message}`);
     return res.status(500).json({
       success: false,
       message: "Something went wrong while sending your message. Please try again or email me directly.",
