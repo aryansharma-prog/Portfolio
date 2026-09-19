@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --------------------------------------------------------------------------
-  // 10. Direct Contact Form (AJAX via Web3Forms API to aryan21sharma04@gmail.com)
+  // 10. Production Contact Form Pipeline (/api/contact)
   // --------------------------------------------------------------------------
   const contactForm = document.getElementById("contact-form");
   const formStatus = document.getElementById("form-status");
@@ -352,6 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("contact-email");
     const subjectInput = document.getElementById("contact-subject");
     const messageInput = document.getElementById("contact-message");
+    const gotchaInput = document.getElementById("contact-gotcha");
+
+    let isSubmitting = false;
 
     const clearErrors = () => {
       document.querySelectorAll(".form-group").forEach((group) => {
@@ -360,10 +363,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (formStatus) {
         formStatus.className = "form-status";
         formStatus.textContent = "";
+        formStatus.innerHTML = "";
       }
     };
 
-    [nameInput, emailInput, messageInput].forEach((input) => {
+    [nameInput, emailInput, messageInput, subjectInput].forEach((input) => {
       if (input) {
         input.addEventListener("input", () => {
           input.closest(".form-group")?.classList.remove("has-error");
@@ -373,26 +377,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      // Prevent duplicate submissions while in-flight
+      if (isSubmitting) return;
+
       clearErrors();
 
       let hasError = false;
       const name = nameInput?.value.trim() || "";
       const email = emailInput?.value.trim() || "";
-      const subject = subjectInput?.value.trim() || `Portfolio Message from ${name}`;
+      const subject = subjectInput?.value.trim() || "";
       const message = messageInput?.value.trim() || "";
+      const gotcha = gotchaInput?.value || "";
 
-      if (!name) {
+      // Client-side Validation: Name
+      if (!name || name.length < 2) {
         nameInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
       }
 
+      // Client-side Validation: Email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!email || !emailRegex.test(email)) {
         emailInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
       }
 
-      if (!message) {
+      // Client-side Validation: Message
+      if (!message || message.length < 5) {
         messageInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
       }
@@ -400,64 +412,428 @@ document.addEventListener("DOMContentLoaded", () => {
       if (hasError) {
         if (formStatus) {
           formStatus.className = "form-status error";
-          formStatus.textContent = "Please fill in the required fields with valid information.";
+          formStatus.innerHTML = "Please fill in all required fields with valid information.";
         }
         return;
       }
 
-      // Enter loading state
+      // Enter Loading State
+      isSubmitting = true;
       if (sendBtn) sendBtn.disabled = true;
-      if (btnText) btnText.textContent = "Sending message...";
+      if (btnText) btnText.textContent = "Sending...";
       if (btnIcon) btnIcon.style.display = "none";
       if (btnSpinner) btnSpinner.classList.remove("is-hidden");
 
       try {
-        // Submit directly to Web3Forms public form receiver
-        const response = await fetch("https://api.web3forms.com/submit", {
+        const response = await fetch("/api/contact", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
           body: JSON.stringify({
-            access_key: "883b3ee0-5acd-42e7-a38c-452f2c0443ca", // Web3Forms public client key
-            to: "aryan21sharma04@gmail.com",
-            from_name: name,
-            email: email,
-            subject: subject,
-            message: message,
+            name,
+            email,
+            subject: subject || undefined,
+            message,
+            _gotcha: gotcha,
           }),
         });
 
-        const result = await response.json();
+        const result = await response.json().catch(() => ({}));
 
-        if (response.ok && (result.success || result.message)) {
+        if (response.ok && result.success) {
+          // Success State
           if (formStatus) {
             formStatus.className = "form-status success";
-            formStatus.textContent = "Thanks for reaching out! Your message has been sent successfully. I'll get back to you soon.";
+            formStatus.innerHTML = `
+              <strong>✓ Message sent successfully!</strong><br>
+              I'll get back to you soon.
+            `;
           }
           contactForm.reset();
         } else {
-          // Graceful fallback for demo
+          // API Validation or Rate Limit Error
           if (formStatus) {
-            formStatus.className = "form-status success";
-            formStatus.textContent = "Thanks for reaching out! Your message has been received. I will get back to you shortly.";
+            formStatus.className = "form-status error";
+            formStatus.innerHTML = `
+              <strong>Something went wrong while sending your message.</strong><br>
+              ${escapeHtml(result.message || "Please try again or email me directly.")}
+            `;
           }
-          contactForm.reset();
         }
       } catch (err) {
+        console.error("Contact Form Submission Error:", err);
+        // Network or Server Offline Failure State
         if (formStatus) {
-          formStatus.className = "form-status success";
-          formStatus.textContent = "Thanks for reaching out! Your message has been recorded. I'll get back to you soon.";
+          formStatus.className = "form-status error";
+          formStatus.innerHTML = `
+            <strong>Something went wrong while sending your message.</strong><br>
+            Please try again or <a href="mailto:aryan21sharma04@gmail.com" style="color: inherit; text-decoration: underline;">email me directly</a>.
+          `;
         }
-        contactForm.reset();
       } finally {
         // Restore button state
+        isSubmitting = false;
         if (sendBtn) sendBtn.disabled = false;
-        if (btnText) btnText.textContent = "Send Message Directly";
+        if (btnText) btnText.textContent = "Send Message";
         if (btnIcon) btnIcon.style.display = "block";
         if (btnSpinner) btnSpinner.classList.add("is-hidden");
       }
     });
   }
+
+  // --------------------------------------------------------------------------
+  // 11. Secure Admin Messages Portal Logic
+  // --------------------------------------------------------------------------
+  const adminModal = document.getElementById("admin-modal");
+  const adminModalBackdrop = document.getElementById("admin-modal-backdrop");
+  const adminTriggerBtn = document.getElementById("admin-portal-trigger");
+  const closeAdminModalBtn = document.getElementById("close-admin-modal-btn");
+
+  const adminAuthPanel = document.getElementById("admin-auth-panel");
+  const adminAuthForm = document.getElementById("admin-auth-form");
+  const adminKeyInput = document.getElementById("admin-key-input");
+  const adminAuthError = document.getElementById("admin-auth-error");
+
+  const adminDashboardPanel = document.getElementById("admin-dashboard-panel");
+  const adminStatTotal = document.getElementById("admin-stat-total");
+  const adminStatUnread = document.getElementById("admin-stat-unread");
+  const adminRefreshBtn = document.getElementById("admin-refresh-btn");
+  const adminLogoutBtn = document.getElementById("admin-logout-btn");
+  const adminStatusTabs = document.getElementById("admin-status-tabs");
+  const adminSearchInput = document.getElementById("admin-search-input");
+  const adminMessagesTbody = document.getElementById("admin-messages-tbody");
+  const adminTableEmpty = document.getElementById("admin-table-empty");
+  const adminTableLoading = document.getElementById("admin-table-loading");
+
+  const adminDetailPanel = document.getElementById("admin-detail-panel");
+  const adminBackToListBtn = document.getElementById("admin-back-to-list-btn");
+  const detailStatusSelect = document.getElementById("detail-status-select");
+  const detailFromName = document.getElementById("detail-from-name");
+  const detailFromEmail = document.getElementById("detail-from-email");
+  const detailSubject = document.getElementById("detail-subject");
+  const detailDate = document.getElementById("detail-date");
+  const detailEmailStatus = document.getElementById("detail-email-status");
+  const detailMessageContent = document.getElementById("detail-message-content");
+  const detailReplyBtn = document.getElementById("detail-reply-btn");
+  const detailDeleteBtn = document.getElementById("detail-delete-btn");
+
+  let currentAdminKey = sessionStorage.getItem("admin_api_key") || "";
+  let activeStatusFilter = "all";
+  let activeSearchQuery = "";
+  let currentMessages = [];
+  let selectedMessage = null;
+
+  const openAdminModal = () => {
+    if (!adminModal) return;
+    adminModal.classList.add("active");
+    adminModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    if (currentAdminKey) {
+      showDashboard();
+      fetchAdminStatsAndMessages();
+    } else {
+      showAuth();
+    }
+  };
+
+  const closeAdminModal = () => {
+    if (!adminModal) return;
+    adminModal.classList.remove("active");
+    adminModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  };
+
+  const showAuth = () => {
+    adminAuthPanel?.classList.remove("is-hidden");
+    adminDashboardPanel?.classList.add("is-hidden");
+    if (adminAuthError) adminAuthError.classList.add("is-hidden");
+    if (adminKeyInput) {
+      adminKeyInput.value = "";
+      adminKeyInput.focus();
+    }
+  };
+
+  const showDashboard = () => {
+    adminAuthPanel?.classList.add("is-hidden");
+    adminDashboardPanel?.classList.remove("is-hidden");
+    hideMessageDetail();
+  };
+
+  // Keyboard shortcut Ctrl+Shift+A / Cmd+Shift+A to open admin
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
+      e.preventDefault();
+      openAdminModal();
+    }
+    if (e.key === "Escape" && adminModal?.classList.contains("active")) {
+      closeAdminModal();
+    }
+  });
+
+  adminTriggerBtn?.addEventListener("click", openAdminModal);
+  closeAdminModalBtn?.addEventListener("click", closeAdminModal);
+  adminModalBackdrop?.addEventListener("click", closeAdminModal);
+
+  // Handle Admin Key Submission
+  adminAuthForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const key = adminKeyInput?.value.trim();
+    if (!key) return;
+
+    if (adminAuthError) adminAuthError.classList.add("is-hidden");
+
+    try {
+      const response = await fetch("/api/admin/messages/stats", {
+        headers: { "x-admin-key": key },
+      });
+
+      if (response.ok) {
+        currentAdminKey = key;
+        sessionStorage.setItem("admin_api_key", key);
+        showDashboard();
+        fetchAdminStatsAndMessages();
+      } else {
+        const data = await response.json().catch(() => ({}));
+        if (adminAuthError) {
+          adminAuthError.textContent = data.message || "Invalid Admin API Key.";
+          adminAuthError.classList.remove("is-hidden");
+        }
+      }
+    } catch (err) {
+      if (adminAuthError) {
+        adminAuthError.textContent = "Unable to reach server. Please check your connection.";
+        adminAuthError.classList.remove("is-hidden");
+      }
+    }
+  });
+
+  adminLogoutBtn?.addEventListener("click", () => {
+    currentAdminKey = "";
+    sessionStorage.removeItem("admin_api_key");
+    showAuth();
+  });
+
+  adminRefreshBtn?.addEventListener("click", () => {
+    fetchAdminStatsAndMessages();
+  });
+
+  // Filter Tabs
+  adminStatusTabs?.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab-btn");
+    if (!tab) return;
+
+    adminStatusTabs.querySelectorAll(".tab-btn").forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeStatusFilter = tab.dataset.status || "all";
+    fetchMessages();
+  });
+
+  // Search input debounced
+  let searchTimer;
+  adminSearchInput?.addEventListener("input", (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      activeSearchQuery = e.target.value.trim();
+      fetchMessages();
+    }, 300);
+  });
+
+  const fetchAdminStatsAndMessages = async () => {
+    await fetchStats();
+    await fetchMessages();
+  };
+
+  const fetchStats = async () => {
+    if (!currentAdminKey) return;
+    try {
+      const res = await fetch("/api/admin/messages/stats", {
+        headers: { "x-admin-key": currentAdminKey },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (adminStatTotal) adminStatTotal.textContent = data.data?.total || 0;
+        if (adminStatUnread) adminStatUnread.textContent = data.data?.unread || 0;
+      }
+    } catch (err) {
+      console.warn("Could not load stats:", err);
+    }
+  };
+
+  const fetchMessages = async () => {
+    if (!currentAdminKey) return;
+    if (adminTableLoading) adminTableLoading.classList.remove("is-hidden");
+    if (adminTableEmpty) adminTableEmpty.classList.add("is-hidden");
+
+    try {
+      const params = new URLSearchParams();
+      if (activeStatusFilter !== "all") params.append("status", activeStatusFilter);
+      if (activeSearchQuery) params.append("search", activeSearchQuery);
+
+      const res = await fetch(`/api/admin/messages?${params.toString()}`, {
+        headers: { "x-admin-key": currentAdminKey },
+      });
+
+      if (adminTableLoading) adminTableLoading.classList.add("is-hidden");
+
+      if (res.ok) {
+        const result = await res.json();
+        currentMessages = result.data?.messages || [];
+        renderMessagesTable(currentMessages);
+      } else if (res.status === 401) {
+        currentAdminKey = "";
+        sessionStorage.removeItem("admin_api_key");
+        showAuth();
+      }
+    } catch (err) {
+      if (adminTableLoading) adminTableLoading.classList.add("is-hidden");
+      console.error("Failed to fetch messages:", err);
+    }
+  };
+
+  const renderMessagesTable = (messages) => {
+    if (!adminMessagesTbody) return;
+    adminMessagesTbody.innerHTML = "";
+
+    if (!messages || messages.length === 0) {
+      if (adminTableEmpty) adminTableEmpty.classList.remove("is-hidden");
+      return;
+    }
+
+    if (adminTableEmpty) adminTableEmpty.classList.add("is-hidden");
+
+    messages.forEach((msg) => {
+      const tr = document.createElement("tr");
+      if (msg.status === "unread") tr.classList.add("unread-row");
+
+      const dateStr = new Date(msg.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(msg.name)}</strong></td>
+        <td>${escapeHtml(msg.subject || "(No Subject)")}</td>
+        <td>${dateStr}</td>
+        <td><span class="status-badge ${msg.status}">${msg.status}</span></td>
+        <td>
+          <button type="button" class="btn btn-ghost btn-sm view-msg-btn" data-id="${msg._id}">
+            View
+          </button>
+        </td>
+      `;
+
+      tr.addEventListener("click", () => openMessageDetail(msg));
+      adminMessagesTbody.appendChild(tr);
+    });
+  };
+
+  const openMessageDetail = async (msg) => {
+    selectedMessage = msg;
+    hideTableShowDetail();
+
+    if (detailFromName) detailFromName.textContent = msg.name;
+    if (detailFromEmail) {
+      detailFromEmail.textContent = msg.email;
+      detailFromEmail.href = `mailto:${msg.email}?subject=Re:%20${encodeURIComponent(msg.subject || "Your Inquiry")}`;
+    }
+    if (detailSubject) detailSubject.textContent = msg.subject || "No Subject";
+    if (detailDate) {
+      detailDate.textContent = new Date(msg.createdAt).toLocaleString("en-US", {
+        dateStyle: "full",
+        timeStyle: "short",
+      });
+    }
+    if (detailEmailStatus) {
+      detailEmailStatus.textContent = msg.emailDeliveryStatus || "unknown";
+    }
+    if (detailMessageContent) detailMessageContent.textContent = msg.message;
+    if (detailStatusSelect) detailStatusSelect.value = msg.status;
+    if (detailReplyBtn) {
+      detailReplyBtn.href = `mailto:${msg.email}?subject=Re:%20${encodeURIComponent(msg.subject || "Your Inquiry")}`;
+    }
+
+    // Auto-update unread to read
+    if (msg.status === "unread") {
+      updateStatus(msg._id, "read");
+    }
+  };
+
+  const hideTableShowDetail = () => {
+    document.querySelector(".admin-table-container")?.classList.add("is-hidden");
+    document.querySelector(".admin-filter-bar")?.classList.add("is-hidden");
+    adminDetailPanel?.classList.remove("is-hidden");
+  };
+
+  const hideMessageDetail = () => {
+    document.querySelector(".admin-table-container")?.classList.remove("is-hidden");
+    document.querySelector(".admin-filter-bar")?.classList.remove("is-hidden");
+    adminDetailPanel?.classList.add("is-hidden");
+    selectedMessage = null;
+  };
+
+  adminBackToListBtn?.addEventListener("click", () => {
+    hideMessageDetail();
+    fetchAdminStatsAndMessages();
+  });
+
+  detailStatusSelect?.addEventListener("change", (e) => {
+    if (selectedMessage) {
+      updateStatus(selectedMessage._id, e.target.value);
+    }
+  });
+
+  detailDeleteBtn?.addEventListener("click", async () => {
+    if (!selectedMessage) return;
+    if (confirm("Are you sure you want to permanently delete this message?")) {
+      try {
+        const res = await fetch(`/api/admin/messages/${selectedMessage._id}`, {
+          method: "DELETE",
+          headers: { "x-admin-key": currentAdminKey },
+        });
+        if (res.ok) {
+          hideMessageDetail();
+          fetchAdminStatsAndMessages();
+        }
+      } catch (err) {
+        alert("Failed to delete message.");
+      }
+    }
+  });
+
+  const updateStatus = async (id, status) => {
+    try {
+      const res = await fetch(`/api/admin/messages/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": currentAdminKey,
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        if (selectedMessage && selectedMessage._id === id) {
+          selectedMessage.status = status;
+        }
+        fetchStats();
+      }
+    } catch (err) {
+      console.warn("Could not update status:", err);
+    }
+  };
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 });
+

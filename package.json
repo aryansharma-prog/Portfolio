@@ -2,12 +2,24 @@
   "name": "aryan-sharma-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Portfolio of Aryan Sharma — SDE Aspirant & MERN Stack Developer",
+  "description": "Portfolio of Aryan Sharma — SDE Aspirant & MERN Stack Developer with Production Contact Pipeline",
+  "main": "server.js",
   "scripts": {
-    "dev": "npx -y serve . -l 3000",
-    "build": "echo 'Static build validation passed'",
-    "start": "npx -y serve . -l 3000",
-    "preview": "npx -y serve . -l 3000"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node test_integration.js",
+    "build": "echo 'Static & API build validation passed'",
+    "preview": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "nodemailer": "^6.10.0"
   },
   "keywords": [
     "portfolio",
@@ -15,7 +27,10 @@
     "sde",
     "mern",
     "react",
-    "ai-agents"
+    "ai-agents",
+    "nodemailer",
+    "express",
+    "mongodb"
   ],
   "author": "Aryan Sharma",
   "license": "MIT"
