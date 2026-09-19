@@ -6,20 +6,20 @@ const nodemailer = require("nodemailer");
  */
 const createTransporter = async () => {
   const host = process.env.SMTP_HOST ? process.env.SMTP_HOST.trim() : null;
-  const port = parseInt(process.env.SMTP_PORT || "465", 10);
+  const port = parseInt(process.env.SMTP_PORT || "587", 10);
   const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : "";
   const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, "") : "";
   const secure = process.env.SMTP_SECURE === "true" || port === 465;
 
   const timeouts = {
-    connectionTimeout: 6000, // 6s connection timeout
-    greetingTimeout: 6000,   // 6s greeting timeout
-    socketTimeout: 8000,     // 8s socket timeout
+    connectionTimeout: 8000, // 8s connection timeout
+    greetingTimeout: 8000,   // 8s greeting timeout
+    socketTimeout: 10000,    // 10s socket timeout
   };
 
   if (user && pass) {
-    // If Gmail service or smtp.gmail.com
-    if (!host || host.includes("gmail.com") || process.env.SMTP_SERVICE === "gmail") {
+    // If explicit SMTP_SERVICE is set to gmail and no custom host provided
+    if (process.env.SMTP_SERVICE === "gmail" && !host) {
       return nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -30,11 +30,11 @@ const createTransporter = async () => {
       });
     }
 
-    // Custom SMTP Provider (Resend, SendGrid, Postmark, AWS SES, etc.)
+    // Standard SMTP Provider (Gmail smtp.gmail.com:587 / 465, Resend, SendGrid, Postmark, AWS SES, etc.)
     return nodemailer.createTransport({
-      host,
-      port,
-      secure,
+      host: host || "smtp.gmail.com",
+      port: port,
+      secure: secure,
       auth: {
         user,
         pass,

@@ -463,12 +463,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           contactForm.reset();
         } else {
-          // API Validation or Rate Limit Error
+          // API Validation, Rate Limit, or Server Error
           if (formStatus) {
             formStatus.className = "form-status error";
+            const errDetail = result.message || (result.errors && result.errors[0]?.msg) || "Please try again or email me directly.";
             formStatus.innerHTML = `
-              <strong>Something went wrong while sending your message.</strong><br>
-              ${escapeHtml(result.message || "Please try again or email me directly.")}
+              <strong>${escapeHtml(errDetail)}</strong>
             `;
           }
         }
@@ -478,8 +478,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (formStatus) {
           formStatus.className = "form-status error";
           formStatus.innerHTML = `
-            <strong>Something went wrong while sending your message.</strong><br>
-            Please try again or <a href="mailto:aryan21sharma04@gmail.com" style="color: inherit; text-decoration: underline;">email me directly</a>.
+            <strong>Unable to connect to contact server.</strong><br>
+            Please check your connection or <a href="mailto:aryan21sharma04@gmail.com" style="color: inherit; text-decoration: underline;">email me directly</a>.
           `;
         }
       } finally {

@@ -53,11 +53,13 @@ const contactValidationRules = [
  * 5. Returns client confirmation
  */
 const submitContactMessage = async (req, res) => {
+  console.log("[Diagnostic] CONTACT_REQUEST_RECEIVED");
   try {
     // 1. Check Anti-Spam Honeypot
-    const honeypot = req.body._gotcha || req.body.botcheck;
+    const honeypot = req.body?._gotcha || req.body?.botcheck;
     if (honeypot) {
       console.warn(`[Anti-Spam] Bot trap triggered from IP: ${req.ip}`);
+      console.log("[Diagnostic] CONTACT_REQUEST_SUCCESS");
       return res.status(200).json({
         success: true,
         message: "Message sent successfully! I'll get back to you soon.",
@@ -67,6 +69,7 @@ const submitContactMessage = async (req, res) => {
     // 2. Validate Request Fields
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log("[Diagnostic] CONTACT_ERROR: Validation Failed (HTTP 400)");
       return res.status(400).json({
         success: false,
         message: "Please correct the errors in the form.",
@@ -77,14 +80,17 @@ const submitContactMessage = async (req, res) => {
       });
     }
 
+    console.log("[Diagnostic] CONTACT_VALIDATION_PASSED");
+
     const { name, email, subject, message } = req.body;
-    const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || req.ip;
+    const clientIp = req.headers["x-forwarded-for"] || req.socket?.remoteAddress || req.ip || "Unknown";
     const userAgent = req.headers["user-agent"] || "Unknown";
     const cleanSubject = subject && subject.trim() ? subject.trim() : `Portfolio Message from ${name}`;
 
     let savedMessage = null;
 
-    // 3. Persist message to database with timeout protection
+    // 3. Persist message to MongoDB Atlas with timeout protection
+    console.log("[Diagnostic] MONGODB_SAVE_STARTED");
     if (isConnected()) {
       try {
         const createPromise = ContactMessage.create({
@@ -93,7 +99,7 @@ const submitContactMessage = async (req, res) => {
           subject: cleanSubject,
           message,
           status: "unread",
-          emailDeliveryStatus: "skipped",
+          emailDeliveryStatus: "pending",
           ipAddress: clientIp,
           userAgent: userAgent,
         });
@@ -103,13 +109,13 @@ const submitContactMessage = async (req, res) => {
         );
 
         savedMessage = await Promise.race([createPromise, dbTimeout]);
-        console.log(`[Contact] Saved message #${savedMessage._id} to MongoDB from ${email}`);
+        console.log("[Diagnostic] MONGODB_SAVE_SUCCESS");
       } catch (dbErr) {
-        console.warn(`[Contact] MongoDB Save notice: ${dbErr.message}. Storing in memory fallback.`);
+        console.warn(`[Contact] MongoDB Save Notice: ${dbErr.message}. Storing in fallback store.`);
       }
     }
 
-    // Resilient Fallback store if DB is offline or connecting
+    // In-memory Fallback store if DB is offline or connecting
     if (!savedMessage) {
       savedMessage = {
         _id: "mem_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
@@ -118,60 +124,70 @@ const submitContactMessage = async (req, res) => {
         subject: cleanSubject,
         message,
         status: "unread",
-        emailDeliveryStatus: "skipped",
+        emailDeliveryStatus: "pending",
         ipAddress: clientIp,
         userAgent: userAgent,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
       memoryFallbackStore.unshift(savedMessage);
-      console.log(`[Contact] Saved message to in-memory store (${email})`);
+      console.log("[Diagnostic] MONGODB_SAVE_SUCCESS (in-memory fallback)");
     }
 
-    // 4. Send Email Notification (Non-blocking with timeout guarantee)
-    const emailResult = await sendContactNotification({
-      name,
-      email,
-      subject: cleanSubject,
-      message,
+    // 4. Return instant 201 Created confirmation to the client
+    const responsePayload = {
+      id: savedMessage._id,
       createdAt: savedMessage.createdAt,
-    });
+    };
 
-    // Update delivery status on stored message
-    if (savedMessage) {
-      const status = emailResult.success ? "sent" : "failed";
-      savedMessage.emailDeliveryStatus = status;
-      if (!emailResult.success) {
-        savedMessage.emailError = emailResult.error;
-      }
-
-      if (isConnected() && typeof savedMessage._id === "object") {
-        try {
-          await ContactMessage.findByIdAndUpdate(savedMessage._id, {
-            emailDeliveryStatus: status,
-            emailError: emailResult.error || null,
-          });
-        } catch (updateErr) {
-          // Non-blocking
-        }
-      }
-    }
-
-    // 5. Return success to client
-    return res.status(201).json({
+    console.log("[Diagnostic] CONTACT_REQUEST_SUCCESS (HTTP 201)");
+    res.status(201).json({
       success: true,
       message: "Message sent successfully! I'll get back to you soon.",
-      data: {
-        id: savedMessage._id,
-        createdAt: savedMessage.createdAt,
-      },
+      data: responsePayload,
     });
+
+    // 5. Asynchronous Non-blocking Email Dispatch in Background
+    (async () => {
+      console.log("[Diagnostic] EMAIL_SEND_STARTED");
+      try {
+        const emailResult = await sendContactNotification({
+          name,
+          email,
+          subject: cleanSubject,
+          message,
+          createdAt: savedMessage.createdAt,
+        });
+
+        const deliveryStatus = emailResult.success ? "sent" : "failed";
+        if (emailResult.success) {
+          console.log("[Diagnostic] EMAIL_SEND_SUCCESS");
+        } else {
+          console.log(`[Diagnostic] EMAIL_SEND_NOTICE: ${emailResult.error}`);
+        }
+
+        if (savedMessage && isConnected() && typeof savedMessage._id === "object") {
+          try {
+            await ContactMessage.findByIdAndUpdate(savedMessage._id, {
+              emailDeliveryStatus: deliveryStatus,
+              emailError: emailResult.error || null,
+            });
+          } catch (e) {
+            // Background update notice
+          }
+        }
+      } catch (emailErr) {
+        console.log(`[Diagnostic] EMAIL_SEND_NOTICE: ${emailErr.message}`);
+      }
+    })();
   } catch (error) {
-    console.error(`[Contact Controller] Internal Error: ${error.stack || error.message}`);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while sending your message. Please try again or email me directly.",
-    });
+    console.error(`[Diagnostic] CONTACT_ERROR: ${error.name} - ${error.message} (HTTP 500)`);
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong while sending your message. Please try again or email me directly.",
+      });
+    }
   }
 };
 
