@@ -7,8 +7,8 @@ const nodemailer = require("nodemailer");
 const createTransporter = async () => {
   const host = process.env.SMTP_HOST;
   const port = parseInt(process.env.SMTP_PORT || "587", 10);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : "";
+  const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, "") : "";
   const secure = process.env.SMTP_SECURE === "true" || port === 465;
 
   if (user && pass) {

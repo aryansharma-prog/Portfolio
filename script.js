@@ -340,6 +340,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // --------------------------------------------------------------------------
   // 10. Production Contact Form Pipeline (/api/contact)
   // --------------------------------------------------------------------------
+  const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+  const metaApiUrl = document
+    .querySelector('meta[name="portfolio-api-url"]')
+    ?.getAttribute("content")
+    ?.trim();
+  const API_BASE_URL = isLocalhost
+    ? ""
+    : (window.PORTFOLIO_BACKEND_URL || (metaApiUrl && metaApiUrl !== "" ? metaApiUrl : "")).replace(/\/+$/, "");
   const contactForm = document.getElementById("contact-form");
   const formStatus = document.getElementById("form-status");
   const sendBtn = document.getElementById("send-msg-btn");
@@ -425,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (btnSpinner) btnSpinner.classList.remove("is-hidden");
 
       try {
-        const response = await fetch("/api/contact", {
+        const response = await fetch(`${API_BASE_URL}/api/contact`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -586,7 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (adminAuthError) adminAuthError.classList.add("is-hidden");
 
     try {
-      const response = await fetch("/api/admin/messages/stats", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/messages/stats`, {
         headers: { "x-admin-key": key },
       });
 
@@ -649,7 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const fetchStats = async () => {
     if (!currentAdminKey) return;
     try {
-      const res = await fetch("/api/admin/messages/stats", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/messages/stats`, {
         headers: { "x-admin-key": currentAdminKey },
       });
       if (res.ok) {
@@ -672,7 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (activeStatusFilter !== "all") params.append("status", activeStatusFilter);
       if (activeSearchQuery) params.append("search", activeSearchQuery);
 
-      const res = await fetch(`/api/admin/messages?${params.toString()}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/messages?${params.toString()}`, {
         headers: { "x-admin-key": currentAdminKey },
       });
 
@@ -790,7 +800,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!selectedMessage) return;
     if (confirm("Are you sure you want to permanently delete this message?")) {
       try {
-        const res = await fetch(`/api/admin/messages/${selectedMessage._id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/admin/messages/${selectedMessage._id}`, {
           method: "DELETE",
           headers: { "x-admin-key": currentAdminKey },
         });
@@ -806,7 +816,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updateStatus = async (id, status) => {
     try {
-      const res = await fetch(`/api/admin/messages/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/messages/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

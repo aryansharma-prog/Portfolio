@@ -43,14 +43,18 @@ app.use(
 );
 
 // CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS
+const configuredOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-  : [
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      "https://aryansharma.dev",
-      "https://portfolio-amber-rho-jwa3w6ztpg.vercel.app",
-    ];
+  : [];
+
+const defaultAllowed = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://aryansharma.dev",
+  "https://portfolio-amber-rho-jwa3w6ztpg.vercel.app",
+];
+
+const allowedOrigins = [...new Set([...defaultAllowed, ...configuredOrigins])];
 
 app.use(
   cors({
@@ -59,6 +63,8 @@ app.use(
       if (!origin) return callback(null, true);
       if (
         allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".onrender.com") ||
         process.env.NODE_ENV !== "production"
       ) {
         return callback(null, true);
@@ -67,6 +73,7 @@ app.use(
     },
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "x-admin-key"],
+    credentials: true,
   })
 );
 

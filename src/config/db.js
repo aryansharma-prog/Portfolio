@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 let isConnected = false;
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/portfolio_db";
+  const rawUri = process.env.MONGODB_URI;
+  const uri = rawUri && rawUri.trim() !== "" ? rawUri.trim() : "mongodb://127.0.0.1:27017/portfolio_db";
 
   if (isConnected) {
     return;
