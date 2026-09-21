@@ -278,6 +278,179 @@ Received: ${timestamp}
   }
 };
 
+/**
+ * Sends a 6-digit OTP verification email to the user before submitting contact inquiry.
+ */
+const sendVerificationOtpEmail = async ({ email, name, otp }) => {
+  const fromEmail =
+    process.env.EMAIL_FROM ||
+    process.env.SMTP_USER ||
+    '"Aryan Sharma | Portfolio" <aryan21sharma04@gmail.com>';
+
+  const plainTextContent = `Hello ${name || "there"},
+
+Your verification code for sending a message to Aryan Sharma is:
+
+${otp}
+
+This code will expire in 10 minutes. If you did not request this, please disregard this email.
+
+Best regards,
+Aryan Sharma Portfolio
+https://aryansharma.dev
+`;
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Code - Aryan Sharma Portfolio</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #090d16;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #101626;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+    }
+    .header {
+      background: linear-gradient(135deg, #e64157 0%, #415de6 100%);
+      padding: 26px 20px;
+      text-align: center;
+    }
+    .header h1 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .body {
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .lead {
+      font-size: 15px;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .otp-box {
+      background: #090d16;
+      border: 2px dashed #415de6;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      display: inline-block;
+      width: 80%;
+    }
+    .otp-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 10px;
+      color: #12c2e9;
+      margin: 0;
+    }
+    .expiry-note {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 16px;
+    }
+    .footer {
+      padding: 18px 24px;
+      background: #090d16;
+      border-top: 1px solid #1e293b;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Email Verification</h1>
+    </div>
+    <div class="body">
+      <p class="lead">
+        Hi <strong>${escapeHtml(name || "there")}</strong>,<br>
+        Please use the following verification code to confirm your email and deliver your message to Aryan Sharma:
+      </p>
+      
+      <div class="otp-box">
+        <div class="otp-code">${escapeHtml(otp)}</div>
+      </div>
+
+      <p class="expiry-note">
+        ⏱ This verification code is valid for <strong>10 minutes</strong>.
+      </p>
+    </div>
+    <div class="footer">
+      Sent automatically from <strong>Aryan Sharma Portfolio</strong> (<a href="https://aryansharma.dev" style="color: #415de6; text-decoration: none;">aryansharma.dev</a>).<br>
+      If you did not initiate this request, you can safely ignore this email.
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  try {
+    const transporter = await createTransporter();
+
+    if (!transporter) {
+      console.log("--------------------------------------------------");
+      console.log(`[Email Service: Verification OTP for ${email}]`);
+      console.log(`Code: ${otp}`);
+      console.log("--------------------------------------------------");
+      return {
+        success: true,
+        method: "console_logged",
+        messageId: "console-otp-" + Date.now(),
+      };
+    }
+
+    const mailOptions = {
+      from: fromEmail,
+      to: email,
+      subject: `[${otp}] Your Verification Code for Aryan Sharma Portfolio`,
+      text: plainTextContent,
+      html: htmlContent,
+    };
+
+    const sendPromise = transporter.sendMail(mailOptions);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("OTP email dispatch timed out after 7 seconds")), 7000)
+    );
+
+    const info = await Promise.race([sendPromise, timeoutPromise]);
+    console.log(`[Email Service] OTP email delivered to ${email}. Message ID: ${info.messageId}`);
+
+    return {
+      success: true,
+      messageId: info.messageId,
+      previewUrl: nodemailer.getTestMessageUrl(info) || null,
+    };
+  } catch (error) {
+    console.error(`[Email Service] OTP delivery error: ${error.message}`);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+};
+
 function escapeHtml(str) {
   if (!str) return "";
   return String(str)
@@ -290,4 +463,6 @@ function escapeHtml(str) {
 
 module.exports = {
   sendContactNotification,
+  sendVerificationOtpEmail,
 };
+

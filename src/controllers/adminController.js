@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ContactMessage = require("../models/ContactMessage");
 const { isConnected } = require("../config/db");
 const { memoryFallbackStore } = require("./contactController");
@@ -26,25 +27,43 @@ const getMessages = async (req, res) => {
         ];
       }
 
-      const [messages, total, unreadCount] = await Promise.all([
-        ContactMessage.find(query).sort({ createdAt: -1 }).skip(skip).limit(limitNum),
+      const [dbMessages, dbTotal, dbUnreadCount] = await Promise.all([
+        ContactMessage.find(query).sort({ createdAt: -1 }),
         ContactMessage.countDocuments(query),
         ContactMessage.countDocuments({ status: "unread" }),
       ]);
 
+      // Combine with memory fallback store for complete visibility
+      let combined = [...dbMessages, ...memoryFallbackStore];
+      if (status && status !== "all") {
+        combined = combined.filter((m) => m.status === status);
+      }
+      if (search) {
+        const s = search.toLowerCase();
+        combined = combined.filter(
+          (m) =>
+            (m.name && m.name.toLowerCase().includes(s)) ||
+            (m.email && m.email.toLowerCase().includes(s)) ||
+            (m.subject && m.subject.toLowerCase().includes(s)) ||
+            (m.message && m.message.toLowerCase().includes(s))
+        );
+      }
+
+      const paginated = combined.slice(skip, skip + limitNum);
+
       return res.status(200).json({
         success: true,
         data: {
-          messages,
+          messages: paginated,
           pagination: {
             page: pageNum,
             limit: limitNum,
-            total,
-            totalPages: Math.ceil(total / limitNum),
+            total: combined.length,
+            totalPages: Math.ceil(combined.length / limitNum),
           },
           stats: {
-            unreadCount,
-            totalCount: total,
+            unreadCount: dbUnreadCount + memoryFallbackStore.filter((m) => m.status === "unread").length,
+            totalCount: combined.length,
           },
         },
       });
@@ -59,10 +78,10 @@ const getMessages = async (req, res) => {
       const s = search.toLowerCase();
       filtered = filtered.filter(
         (m) =>
-          m.name.toLowerCase().includes(s) ||
-          m.email.toLowerCase().includes(s) ||
-          m.subject.toLowerCase().includes(s) ||
-          m.message.toLowerCase().includes(s)
+          (m.name && m.name.toLowerCase().includes(s)) ||
+          (m.email && m.email.toLowerCase().includes(s)) ||
+          (m.subject && m.subject.toLowerCase().includes(s)) ||
+          (m.message && m.message.toLowerCase().includes(s))
       );
     }
 
@@ -101,29 +120,22 @@ const getMessageById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (isConnected()) {
+    if (isConnected() && mongoose.Types.ObjectId.isValid(id)) {
       const message = await ContactMessage.findById(id);
-      if (!message) {
-        return res.status(404).json({
-          success: false,
-          message: "Message not found.",
+      if (message) {
+        if (message.status === "unread") {
+          message.status = "read";
+          await message.save().catch(() => {});
+        }
+        return res.status(200).json({
+          success: true,
+          data: message,
         });
       }
-
-      // Auto-mark as read if viewing unread message
-      if (message.status === "unread") {
-        message.status = "read";
-        await message.save();
-      }
-
-      return res.status(200).json({
-        success: true,
-        data: message,
-      });
     }
 
-    // Fallback store
-    const message = memoryFallbackStore.find((m) => m._id === id || String(m._id) === String(id));
+    // Fallback store check
+    const message = memoryFallbackStore.find((m) => String(m._id) === String(id));
     if (!message) {
       return res.status(404).json({
         success: false,
@@ -164,29 +176,24 @@ const updateMessageStatus = async (req, res) => {
       });
     }
 
-    if (isConnected()) {
+    if (isConnected() && mongoose.Types.ObjectId.isValid(id)) {
       const updated = await ContactMessage.findByIdAndUpdate(
         id,
         { status },
         { new: true, runValidators: true }
       );
 
-      if (!updated) {
-        return res.status(404).json({
-          success: false,
-          message: "Message not found.",
+      if (updated) {
+        return res.status(200).json({
+          success: true,
+          message: `Message status updated to ${status}.`,
+          data: updated,
         });
       }
-
-      return res.status(200).json({
-        success: true,
-        message: `Message status updated to ${status}.`,
-        data: updated,
-      });
     }
 
-    // Fallback store
-    const item = memoryFallbackStore.find((m) => m._id === id || String(m._id) === String(id));
+    // Fallback store check
+    const item = memoryFallbackStore.find((m) => String(m._id) === String(id));
     if (!item) {
       return res.status(404).json({
         success: false,
@@ -218,23 +225,18 @@ const deleteMessage = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (isConnected()) {
+    if (isConnected() && mongoose.Types.ObjectId.isValid(id)) {
       const deleted = await ContactMessage.findByIdAndDelete(id);
-      if (!deleted) {
-        return res.status(404).json({
-          success: false,
-          message: "Message not found.",
+      if (deleted) {
+        return res.status(200).json({
+          success: true,
+          message: "Message deleted successfully.",
         });
       }
-
-      return res.status(200).json({
-        success: true,
-        message: "Message deleted successfully.",
-      });
     }
 
-    // Fallback store
-    const index = memoryFallbackStore.findIndex((m) => m._id === id || String(m._id) === String(id));
+    // Fallback store check
+    const index = memoryFallbackStore.findIndex((m) => String(m._id) === String(id));
     if (index === -1) {
       return res.status(404).json({
         success: false,
@@ -271,14 +273,19 @@ const getStats = async (req, res) => {
         ContactMessage.countDocuments({ status: "archived" }),
       ]);
 
+      const memUnread = memoryFallbackStore.filter((m) => m.status === "unread").length;
+      const memReplied = memoryFallbackStore.filter((m) => m.status === "replied").length;
+      const memRead = memoryFallbackStore.filter((m) => m.status === "read").length;
+      const memArchived = memoryFallbackStore.filter((m) => m.status === "archived").length;
+
       return res.status(200).json({
         success: true,
         data: {
-          total,
-          unread,
-          read,
-          replied,
-          archived,
+          total: total + memoryFallbackStore.length,
+          unread: unread + memUnread,
+          read: read + memRead,
+          replied: replied + memReplied,
+          archived: archived + memArchived,
         },
       });
     }

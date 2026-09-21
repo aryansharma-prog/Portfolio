@@ -14,11 +14,11 @@
     content="Aryan Sharma, SDE, Software Development Engineer, MERN Stack, React, Node.js, Express, MongoDB, LangGraph, AI Agents, AI Interview Platform, Gemini AI, Data Structures and Algorithms, C++, Full Stack Developer, KIET, Agentra, CodeBlaze" />
   <meta name="author" content="Aryan Sharma" />
   <link rel="canonical" href="https://aryansharma.dev" />
-  <meta name="theme-color" content="#070b14" />
+  <meta name="theme-color" content="#090d16" />
 
-  <!-- Render Backend API URL (Set your deployed Render backend URL below if decoupled from Vercel) -->
   <!-- Render Backend API URL -->
   <meta name="portfolio-api-url" content="https://portfolio-gr6b.onrender.com" />
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://aryansharma.dev" />
@@ -36,13 +36,13 @@
 
   <!-- Favicon (SVG) -->
   <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b14'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='14' fill='%2310b981'%3E%26lt%3BAS/%26gt%3B%3C/text%3E%3C/svg%3E" />
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23090d16'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='14' fill='%23415de6'%3E%26lt%3BAS/%26gt%3B%3C/text%3E%3C/svg%3E" />
 
-  <!-- Google Fonts & Preconnect -->
+  <!-- Google Fonts: Rubik, Outfit, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
     rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
@@ -80,6 +80,10 @@
 </head>
 
 <body>
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
   <!-- Skip to main content for accessibility -->
   <a href="#main-content" class="skip-to-content">Skip to content</a>
 
@@ -87,13 +91,16 @@
   <header class="site-header" id="site-header">
     <div class="container nav-container">
       <a href="#hero" class="brand" aria-label="Aryan Sharma Homepage">
-        <span class="brand-code">&lt;AS/&gt;</span>
+        <span class="brand-code">&lt;</span>
         <span class="brand-name">Aryan Sharma</span>
+        <span class="brand-code">/&gt;</span>
         <span class="brand-status-dot" title="Available for SDE opportunities"></span>
       </a>
 
       <!-- Desktop Navigation -->
       <nav class="nav-links" id="desktop-nav" aria-label="Main Navigation">
+        <a href="#hero" class="nav-item active">Home</a>
+        <a href="#interests" class="nav-item">Interests</a>
         <a href="#about" class="nav-item">About</a>
         <a href="#featured-project" class="nav-item">Agentra</a>
         <a href="#projects" class="nav-item">Projects</a>
@@ -109,7 +116,7 @@
         <button id="theme-toggle" class="btn-icon theme-toggle-btn" type="button" aria-label="Toggle light/dark theme"
           title="Toggle theme">
           <!-- Sun Icon (shown in dark mode) -->
-          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+          <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2"
             fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -122,14 +129,15 @@
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
           <!-- Moon Icon (shown in light mode) -->
-          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+          <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2"
             fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
 
         <!-- Resume Link -->
-        <a href="assets/Aryan_Sharma_Resume.pdf" download="Aryan_Sharma_Resume.pdf" target="_blank" class="btn btn-sm btn-outline nav-resume-btn" id="nav-resume-cta">
+        <a href="assets/Aryan_Sharma_Resume.pdf" download="Aryan_Sharma_Resume.pdf" target="_blank"
+          class="btn btn-sm btn-outline nav-resume-btn" id="nav-resume-cta">
           <span>Resume</span>
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -154,7 +162,11 @@
   <div id="mobile-drawer-overlay" class="drawer-overlay" aria-hidden="true"></div>
   <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
     <div class="drawer-header">
-      <span class="brand-code">&lt;AS/&gt;</span>
+      <a href="#hero" class="brand logo">
+        <span>&lt;</span>
+        <span class="brand-name">Aryan Sharma</span>
+        <span>/&gt;</span>
+      </a>
       <button id="close-drawer-btn" class="btn-icon" aria-label="Close menu">
         <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"
           stroke-linecap="round" stroke-linejoin="round">
@@ -164,6 +176,8 @@
       </button>
     </div>
     <nav class="mobile-nav-links" aria-label="Mobile Navigation">
+      <a href="#hero" class="mobile-nav-item">Home</a>
+      <a href="#interests" class="mobile-nav-item">Interests</a>
       <a href="#about" class="mobile-nav-item">About</a>
       <a href="#featured-project" class="mobile-nav-item">Agentra</a>
       <a href="#projects" class="mobile-nav-item">Projects</a>
@@ -173,7 +187,8 @@
       <a href="#contact" class="mobile-nav-item">Contact</a>
     </nav>
     <div class="drawer-footer">
-      <a href="assets/Aryan_Sharma_Resume.pdf" download="Aryan_Sharma_Resume.pdf" target="_blank" class="btn btn-primary btn-block">Download Resume</a>
+      <a href="assets/Aryan_Sharma_Resume.pdf" download="Aryan_Sharma_Resume.pdf" target="_blank"
+        class="btn btn-primary btn-block">Download Resume</a>
       <div class="drawer-socials">
         <a href="https://github.com/aryansharma-prog" target="_blank" rel="noopener noreferrer"
           aria-label="GitHub Profile">
@@ -198,7 +213,7 @@
     <!-- HERO SECTION -->
     <section class="hero" id="hero">
       <div class="container hero-container">
-        <div class="hero-left">
+        <div class="hero-left reveal-on-scroll">
           <div class="hero-eyebrow">
             <span class="status-pulse"></span>
             <span>Available for SDE Roles &amp; Internships</span>
@@ -208,45 +223,65 @@
             Aryan Sharma
           </h1>
 
-          <p class="hero-role">
-            <span class="highlight-text">SDE Aspirant</span> &bull;
-            <span>MERN Stack Developer</span> &bull;
-            <span class="highlight-alt">DSA Enthusiast</span>
-          </p>
+          <div class="hero-showcase-badge">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path
+                d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z" />
+            </svg>
+            <span>SDE Aspirant &bull; MERN Stack Developer &bull; DSA Enthusiast</span>
+          </div>
 
           <p class="hero-description">
             Building scalable web applications and AI-powered systems with a focus on backend engineering, intelligent
             agent orchestration, and efficient system design.
           </p>
 
-          <!-- Hero Action Buttons -->
-          <div class="hero-actions">
-            <a href="#projects" class="btn btn-primary">
-              <span>View Projects</span>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
+          <!-- Social Icons Group -->
+          <div class="hero-social-icons">
             <a href="https://github.com/aryansharma-prog" target="_blank" rel="noopener noreferrer"
-              class="btn btn-secondary" aria-label="Aryan Sharma GitHub Profile">
+              class="social-icon-btn" aria-label="GitHub Profile" title="GitHub">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                 <path
                   d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
-              <span>GitHub ↗</span>
             </a>
             <a href="https://linkedin.com/in/aryan-sharma-b9a4242a3" target="_blank" rel="noopener noreferrer"
-              class="btn btn-secondary" aria-label="Aryan Sharma LinkedIn Profile">
+              class="social-icon-btn" aria-label="LinkedIn Profile" title="LinkedIn">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                 <path
                   d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
               </svg>
-              <span>LinkedIn ↗</span>
             </a>
-            <a href="#contact" class="btn btn-ghost">
+            <a href="https://leetcode.com/" target="_blank" rel="noopener noreferrer"
+              class="social-icon-btn" aria-label="LeetCode Profile" title="LeetCode">
+              <span class="custom-icon-text">LC</span>
+            </a>
+            <a href="mailto:aryan21sharma04@gmail.com" class="social-icon-btn" aria-label="Email Aryan" title="Email Me">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Hero Action Buttons -->
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
               <span>Contact Me</span>
+            </a>
+            <a href="#projects" class="btn btn-secondary">
+              <span>View Projects</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
             </a>
           </div>
 
@@ -260,7 +295,7 @@
         </div>
 
         <!-- Hero Right: Interactive Developer & AI Architecture Visual -->
-        <div class="hero-right">
+        <div class="hero-right reveal-on-scroll">
           <div class="terminal-card" id="hero-terminal">
             <div class="terminal-header">
               <div class="terminal-dots">
@@ -319,16 +354,104 @@
       </div>
     </section>
 
-    <!-- ABOUT SECTION -->
-    <section class="section" id="about">
+    <!-- INTERESTS & CORE PILLARS SECTION (Inspired by itsvijay.com) -->
+    <section class="section" id="interests">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Engineering Profile</p>
-          <h2 class="section-title">About Me</h2>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Interests</span>
+          </div>
+          <h2 class="section-title">Core Engineering Focus</h2>
+          <p class="section-subtitle">Where I invest my time, creativity, and deep technical curiosity.</p>
           <div class="section-divider"></div>
         </div>
 
-        <div class="about-wrapper">
+        <div class="row-pillars-grid">
+          <!-- Pillar 1 -->
+          <div class="pillar-card reveal-on-scroll">
+            <div class="pillar-circle-container">
+              <div class="pillar-circle">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+            </div>
+            <div class="pillar-body">
+              <h3 class="pillar-title">Full Stack &amp; MERN</h3>
+              <p class="pillar-text">Architecting end-to-end web applications with modular React frontends, robust Node/Express backends, and reliable database layers for responsive and performant user experiences.</p>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="pillar-card reveal-on-scroll">
+            <div class="pillar-circle-container">
+              <div class="pillar-circle">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="pillar-body">
+              <h3 class="pillar-title">AI &amp; Multi-Agent Systems</h3>
+              <p class="pillar-text">Building intelligent workflows using LangGraph, recursive decomposition DAGs, RAG pipelines, vector search, and token-optimized orchestration across stateful agent networks.</p>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="pillar-card reveal-on-scroll">
+            <div class="pillar-circle-container">
+              <div class="pillar-circle">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                  <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                  <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+              </div>
+            </div>
+            <div class="pillar-body">
+              <h3 class="pillar-title">Scalable Backend &amp; Architecture</h3>
+              <p class="pillar-text">Structuring secure RESTful microservices, caching layers with Redis, JWT authentication, schema normalization, rate limiting, and fail-fast fault tolerant pipelines.</p>
+            </div>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="pillar-card reveal-on-scroll">
+            <div class="pillar-circle-container">
+              <div class="pillar-circle">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+            </div>
+            <div class="pillar-body">
+              <h3 class="pillar-title">Problem Solving &amp; DSA</h3>
+              <p class="pillar-text">Mastering algorithmic paradigms, time/space complexity, and data structures in C++ (STL) to craft optimized, edge-case resilient, and elegant computational solutions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="section section-alt" id="about">
+      <div class="container">
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">About Me</span>
+          </div>
+          <h2 class="section-title">Engineering Profile</h2>
+          <p class="section-subtitle">A quick snapshot of who I am and what drives my engineering passion.</p>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="about-card reveal-on-scroll">
           <div class="about-narrative">
             <p class="about-lead">
               I am a Computer Science undergraduate at <strong>KIET Group of Institutions (2023–2027)</strong> focused
@@ -359,77 +482,16 @@
               </div>
             </div>
           </div>
-
-          <div class="about-pillars">
-            <div class="pillar-card">
-              <div class="pillar-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="16 18 22 12 16 6"></polyline>
-                  <polyline points="8 6 2 12 8 18"></polyline>
-                </svg>
-              </div>
-              <h3>Full Stack &amp; MERN</h3>
-              <p>Architecting end-to-end web apps with modular React frontends, robust Node/Express backends, and
-                reliable database layers.</p>
-            </div>
-
-            <div class="pillar-card">
-              <div class="pillar-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-              </div>
-              <h3>AI &amp; Multi-Agent Systems</h3>
-              <p>Building intelligent workflows using LangGraph, RAG pipelines, vector search, and token-optimized agent
-                orchestration.</p>
-            </div>
-
-            <div class="pillar-card">
-              <div class="pillar-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                  <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                  <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                </svg>
-              </div>
-              <h3>Scalable Backend &amp; Architecture</h3>
-              <p>Structuring RESTful services, caching layers with Redis, JWT authentication, and structured schema
-                design.</p>
-            </div>
-
-            <div class="pillar-card">
-              <div class="pillar-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                </svg>
-              </div>
-              <h3>Problem Solving &amp; DSA</h3>
-              <p>Practicing data structures and algorithmic complexity in C++ to write performant, optimal, and
-                edge-case resilient code.</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
 
     <!-- FEATURED PROJECT — AGENTRA -->
-    <section class="section section-alt" id="featured-project">
+    <section class="section" id="featured-project">
       <div class="container">
-        <div class="section-header">
-          <div class="featured-badge">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-              <polygon
-                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-              </polygon>
-            </svg>
-            <span>Flagship Research &amp; Engineering Project</span>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Flagship Project</span>
           </div>
           <h2 class="section-title">Agentra — Recursive Multi-Agent AI Platform</h2>
           <p class="section-subtitle">
@@ -439,7 +501,7 @@
           <div class="section-divider"></div>
         </div>
 
-        <div class="cortex-showcase">
+        <div class="cortex-showcase reveal-on-scroll">
           <div class="cortex-main-card">
             <div class="cortex-header">
               <div class="cortex-tag-group">
@@ -683,10 +745,12 @@
     </section>
 
     <!-- OTHER PROJECTS SECTION -->
-    <section class="section" id="projects">
+    <section class="section section-alt" id="projects">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Engineering Work</p>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Projects</span>
+          </div>
           <h2 class="section-title">Production &amp; Scalable Projects</h2>
           <p class="section-subtitle">
             Engineered full-stack and AI-powered web applications solving concrete problems across simulated mock
@@ -696,8 +760,8 @@
         </div>
 
         <div class="projects-grid">
-          <!-- Project 1: AI Interview Platform (Featured Live Project) -->
-          <article class="project-card">
+          <!-- Project 1: AI Interview Platform -->
+          <article class="project-card reveal-on-scroll">
             <div class="project-card-header">
               <div class="project-category-group">
                 <span class="project-category">AI / Full-Stack Web App</span>
@@ -755,7 +819,7 @@
           </article>
 
           <!-- Project 2: CodeBlaze -->
-          <article class="project-card">
+          <article class="project-card reveal-on-scroll">
             <div class="project-card-header">
               <div class="project-category-group">
                 <span class="project-category">Compiler &amp; Sandbox Execution</span>
@@ -810,10 +874,12 @@
     </section>
 
     <!-- SKILLS SECTION -->
-    <section class="section section-alt" id="skills">
+    <section class="section" id="skills">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Technical Competencies</p>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Skills</span>
+          </div>
           <h2 class="section-title">Skills &amp; Technologies</h2>
           <p class="section-subtitle">
             A comprehensive breakdown of my programming languages, frameworks, AI tools, databases, and foundational
@@ -824,7 +890,7 @@
 
         <div class="skills-categories-grid">
           <!-- 1. Languages -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">⚡</span>
               <h3 class="cat-title">Languages</h3>
@@ -837,7 +903,7 @@
           </div>
 
           <!-- 2. Frontend -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">🎨</span>
               <h3 class="cat-title">Frontend</h3>
@@ -852,7 +918,7 @@
           </div>
 
           <!-- 3. Backend -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">⚙️</span>
               <h3 class="cat-title">Backend</h3>
@@ -868,7 +934,7 @@
           </div>
 
           <!-- 4. AI / GenAI -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">🤖</span>
               <h3 class="cat-title">AI &amp; GenAI</h3>
@@ -886,7 +952,7 @@
           </div>
 
           <!-- 5. Databases & Cloud -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">🗄️</span>
               <h3 class="cat-title">Databases &amp; Cloud</h3>
@@ -901,7 +967,7 @@
           </div>
 
           <!-- 6. Developer Tools -->
-          <div class="skill-category-card">
+          <div class="skill-category-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">🛠️</span>
               <h3 class="cat-title">Tools &amp; Workflow</h3>
@@ -915,7 +981,7 @@
           </div>
 
           <!-- 7. CS Fundamentals -->
-          <div class="skill-category-card full-width-card">
+          <div class="skill-category-card full-width-card reveal-on-scroll">
             <div class="cat-header">
               <span class="cat-icon">📐</span>
               <h3 class="cat-title">Computer Science Fundamentals</h3>
@@ -934,10 +1000,12 @@
     </section>
 
     <!-- PROBLEM SOLVING, DSA & LIVE CODING PROFILES SECTION -->
-    <section class="section" id="dsa">
+    <section class="section section-alt" id="dsa">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Algorithms &amp; Activity</p>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Algorithms</span>
+          </div>
           <h2 class="section-title">Problem Solving &amp; Live Stats</h2>
           <p class="section-subtitle">
             Continuous algorithmic problem solving in C++ (STL) paired with dynamic platform telemetry.
@@ -948,7 +1016,7 @@
         <!-- Live Coding Profiles Dashboard -->
         <div class="live-stats-dashboard">
           <!-- LeetCode Live Card -->
-          <div class="stat-widget-card" id="leetcode-widget">
+          <div class="stat-widget-card reveal-on-scroll" id="leetcode-widget">
             <div class="stat-widget-header">
               <div class="widget-brand">
                 <div class="platform-icon leetcode-icon">LC</div>
@@ -1009,7 +1077,7 @@
           </div>
 
           <!-- GitHub Live Card -->
-          <div class="stat-widget-card" id="github-widget">
+          <div class="stat-widget-card reveal-on-scroll" id="github-widget">
             <div class="stat-widget-header">
               <div class="widget-brand">
                 <div class="platform-icon gh-widget-icon">
@@ -1052,7 +1120,7 @@
           </div>
         </div>
 
-        <div class="dsa-wrapper" style="margin-top: 2rem;">
+        <div class="dsa-wrapper reveal-on-scroll">
           <div class="dsa-info-card">
             <div class="dsa-core-details">
               <div class="dsa-badge">Primary Language: C++ (STL)</div>
@@ -1136,15 +1204,17 @@
     </section>
 
     <!-- EDUCATION SECTION -->
-    <section class="section section-alt" id="education">
+    <section class="section" id="education">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Academic Background</p>
-          <h2 class="section-title">Education</h2>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">Education</span>
+          </div>
+          <h2 class="section-title">Academic Background</h2>
           <div class="section-divider"></div>
         </div>
 
-        <div class="education-timeline">
+        <div class="education-timeline reveal-on-scroll">
           <div class="education-card">
             <div class="edu-top">
               <div class="edu-badge">2023 &ndash; 2027</div>
@@ -1185,12 +1255,12 @@
     </section>
 
     <!-- RESUME SECTION -->
-    <section class="section" id="resume">
+    <section class="section section-alt" id="resume">
       <div class="container">
-        <div class="resume-cta-banner">
+        <div class="resume-cta-banner reveal-on-scroll">
           <div class="resume-content">
             <div class="resume-icon-badge">
-              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -1208,7 +1278,7 @@
           <div class="resume-action">
             <a href="assets/Aryan_Sharma_Resume.pdf" class="btn btn-primary btn-lg" id="download-resume-btn"
               download="Aryan_Sharma_Resume.pdf" target="_blank">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -1221,22 +1291,23 @@
       </div>
     </section>
 
-    <!-- CONTACT SECTION -->
-    <section class="section section-alt" id="contact">
+    <!-- CONTACT SECTION WITH EMAIL OTP VERIFICATION -->
+    <section class="section" id="contact">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Get In Touch</p>
+        <div class="section-header reveal-on-scroll">
+          <div class="section-badge-wrap">
+            <span class="theme-pill-badge">What's next</span>
+          </div>
           <h2 class="section-title">Let’s Build Something</h2>
           <p class="section-subtitle">
-            I’m always interested in discussing software engineering, AI applications, full-stack development, and
-            interesting technical problems.
+            Interested in discussing software engineering opportunities, AI systems, or collaborating? Drop a verified message below.
           </p>
           <div class="section-divider"></div>
         </div>
 
         <div class="contact-grid">
           <!-- Left Info Panel -->
-          <div class="contact-info-panel">
+          <div class="contact-info-panel reveal-on-scroll">
             <div class="contact-card">
               <h3>Connect Directly</h3>
               <p>
@@ -1321,63 +1392,127 @@
             </div>
           </div>
 
-          <!-- Right Interactive Direct Contact Form -->
-          <div class="contact-form-panel">
-            <form id="contact-form" class="contact-form" novalidate>
-              <!-- Anti-Spam Honeypot (Hidden from human visitors) -->
-              <input type="text" name="_gotcha" id="contact-gotcha" class="botcheck-field" tabindex="-1"
-                autocomplete="off" aria-hidden="true" style="display:none !important;" />
+          <!-- Right Interactive Direct Contact Form with Verification Flow -->
+          <div class="contact-form-panel reveal-on-scroll">
+            <div class="contact-form-container">
+              <!-- STATE 1: Message Input Form -->
+              <form id="contact-form" class="contact-form" novalidate>
+                <!-- Anti-Spam Honeypot -->
+                <input type="text" name="_gotcha" id="contact-gotcha" class="botcheck-field" tabindex="-1"
+                  autocomplete="off" aria-hidden="true" style="display:none !important;" />
 
-              <div class="form-group">
-                <label for="contact-name">Your Name <span class="required">*</span></label>
-                <input type="text" id="contact-name" name="name" class="form-input"
-                  placeholder="e.g. Recruiters / Engineering Manager" required autocomplete="name" />
-                <span class="form-error" id="name-error">Please enter your name.</span>
+                <div class="form-group">
+                  <label for="contact-name">Your Name <span class="required">*</span></label>
+                  <input type="text" id="contact-name" name="name" class="form-input"
+                    placeholder="e.g. Recruiters / Engineering Manager" required autocomplete="name" />
+                  <span class="form-error" id="name-error">Please enter your name.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-email">Email Address <span class="required">*</span></label>
+                  <input type="email" id="contact-email" name="email" class="form-input" placeholder="name@company.com"
+                    required autocomplete="email" />
+                  <span class="form-error" id="email-error">Please enter a valid email address.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-subject">Subject</label>
+                  <input type="text" id="contact-subject" name="subject" class="form-input"
+                    placeholder="SDE Opportunity / Technical Collaboration" />
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-message">Message <span class="required">*</span></label>
+                  <textarea id="contact-message" name="message" class="form-textarea" rows="4"
+                    placeholder="Hello Aryan, I'd like to discuss an opportunity / project with you..."
+                    required></textarea>
+                  <span class="form-error" id="message-error">Please write a message.</span>
+                </div>
+
+                <div class="form-status" id="form-status" aria-live="polite"></div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="send-msg-btn">
+                  <span id="btn-text">Verify Email &amp; Send Message</span>
+                  <svg id="btn-icon-plane" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                  <div class="spinner is-hidden" id="btn-spinner"></div>
+                </button>
+
+                <!-- Direct Email Fallback Option -->
+                <div class="direct-email-fallback">
+                  <span class="fallback-label">Prefer email?</span>
+                  <a href="mailto:aryan21sharma04@gmail.com?subject=Portfolio%20Contact%20Inquiry"
+                    class="fallback-email-link">
+                    <span>Email me directly</span>
+                    <span class="fallback-arrow">&rarr;</span>
+                  </a>
+                </div>
+              </form>
+
+              <!-- STATE 2: OTP Verification Box (Integrated seamless state) -->
+              <div id="otp-verify-panel" class="otp-verify-panel is-hidden" aria-live="polite">
+                <div class="otp-header">
+                  <div class="otp-icon-badge">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </div>
+                  <h4>Verify Email Ownership</h4>
+                  <p class="otp-subtext">
+                    A 6-digit verification code was sent to <strong id="otp-target-email-display">your email</strong>.
+                    Please enter it below to confirm and deliver your message.
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="otp-input-field">6-Digit Code</label>
+                  <input type="text" id="otp-input-field" class="form-input otp-code-input" maxlength="6"
+                    placeholder="123456" autocomplete="one-time-code" inputmode="numeric" />
+                  <span class="form-error" id="otp-error">Please enter the 6-digit code.</span>
+                </div>
+
+                <div class="otp-status-message" id="otp-status-message"></div>
+
+                <div class="otp-timer-row">
+                  <span id="otp-timer-text">Resend available in <strong id="otp-timer-count">60s</strong></span>
+                  <button type="button" id="resend-otp-btn" class="btn-text-action is-hidden">
+                    Resend Code
+                  </button>
+                </div>
+
+                <div class="otp-action-row">
+                  <button type="button" id="confirm-otp-btn" class="btn btn-primary btn-block">
+                    <span id="confirm-otp-btn-text">Confirm &amp; Send Message</span>
+                    <div class="spinner is-hidden" id="confirm-otp-spinner"></div>
+                  </button>
+                  <button type="button" id="cancel-otp-btn" class="btn btn-ghost btn-sm btn-block">
+                    &larr; Change Email or Edit Message
+                  </button>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="contact-email">Email Address <span class="required">*</span></label>
-                <input type="email" id="contact-email" name="email" class="form-input" placeholder="name@company.com"
-                  required autocomplete="email" />
-                <span class="form-error" id="email-error">Please enter a valid email address.</span>
+              <!-- STATE 3: Success Sent Confirmation State -->
+              <div id="contact-success-panel" class="contact-success-panel is-hidden" aria-live="polite">
+                <div class="success-icon-circle">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <h3>Message Sent Successfully!</h3>
+                <p>
+                  Thank you for reaching out! Your email has been verified and your inquiry has been securely delivered to Aryan. You will receive a response shortly.
+                </p>
+                <button type="button" id="send-another-btn" class="btn btn-outline btn-sm">
+                  Send Another Message
+                </button>
               </div>
-
-              <div class="form-group">
-                <label for="contact-subject">Subject</label>
-                <input type="text" id="contact-subject" name="subject" class="form-input"
-                  placeholder="SDE Opportunity / Technical Collaboration" />
-              </div>
-
-              <div class="form-group">
-                <label for="contact-message">Message <span class="required">*</span></label>
-                <textarea id="contact-message" name="message" class="form-textarea" rows="4"
-                  placeholder="Hello Aryan, I'd like to discuss an opportunity / project with you..."
-                  required></textarea>
-                <span class="form-error" id="message-error">Please write a message.</span>
-              </div>
-
-              <div class="form-status" id="form-status" aria-live="polite"></div>
-
-              <button type="submit" class="btn btn-primary btn-block" id="send-msg-btn">
-                <span id="btn-text">Send Message</span>
-                <svg id="btn-icon-plane" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-                <div class="spinner is-hidden" id="btn-spinner"></div>
-              </button>
-
-              <!-- Direct Email Fallback Option -->
-              <div class="direct-email-fallback">
-                <span class="fallback-label">Prefer email?</span>
-                <a href="mailto:aryan21sharma04@gmail.com?subject=Portfolio%20Contact%20Inquiry"
-                  class="fallback-email-link">
-                  <span>Email me directly</span>
-                  <span class="fallback-arrow">&rarr;</span>
-                </a>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -1389,8 +1524,9 @@
     <div class="container footer-container">
       <div class="footer-left">
         <div class="footer-brand">
-          <span class="brand-code">&lt;AS/&gt;</span>
+          <span class="brand-code">&lt;</span>
           <span class="brand-name">Aryan Sharma</span>
+          <span class="brand-code">/&gt;</span>
         </div>
         <p class="footer-tagline">
           SDE Aspirant &bull; MERN Stack Developer &bull; Building Scalable AI-Powered Applications
@@ -1404,12 +1540,13 @@
       <div class="footer-right">
         <div class="footer-links-col">
           <h4>Navigation</h4>
+          <a href="#hero">Home</a>
+          <a href="#interests">Interests</a>
           <a href="#about">About</a>
           <a href="#featured-project">Agentra</a>
           <a href="#projects">Projects</a>
           <a href="#skills">Skills</a>
           <a href="#dsa">DSA &amp; Stats</a>
-          <a href="#education">Education</a>
           <a href="#contact">Contact</a>
         </div>
 
@@ -1440,7 +1577,7 @@
           <span>Admin</span>
         </button>
       </div>
-      <a href="#hero" class="back-to-top" aria-label="Back to top">
+      <a href="#hero" class="back-to-top" id="footer-back-to-top" aria-label="Back to top">
         <span>Back to Top</span>
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round">
@@ -1449,6 +1586,14 @@
       </a>
     </div>
   </footer>
+
+  <!-- FLOATING BACK TO TOP BUTTON (Appears on scroll) -->
+  <button type="button" class="floating-back-to-top" id="backToTopButton" aria-label="Scroll back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+  </button>
 
   <!-- AGENTRA ARCHITECTURE CASE STUDY MODAL -->
   <div id="case-study-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true"

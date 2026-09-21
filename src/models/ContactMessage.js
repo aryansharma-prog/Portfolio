@@ -42,8 +42,8 @@ const contactMessageSchema = new mongoose.Schema(
     },
     emailDeliveryStatus: {
       type: String,
-      enum: ["sent", "failed", "skipped"],
-      default: "skipped",
+      enum: ["pending", "sent", "failed", "skipped"],
+      default: "pending",
     },
     emailError: {
       type: String,

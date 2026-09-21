@@ -1,12 +1,15 @@
 /**
  * Aryan Sharma — Developer Portfolio Scripts
- * Handles theme management, mobile navigation, terminal interactivity,
- * architecture code tabs, live LeetCode/GitHub APIs, case study modal,
- * and direct AJAX contact form submission.
+ * Aesthetics & Interaction Inspired by itsvijay.com
+ * Handles theme switcher, mobile drawer, scroll reveals, floating back-to-top,
+ * interactive terminal, code tabs, live stats, case study modal, admin portal,
+ * and the complete multi-step Contact Form Email OTP Verification Pipeline.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+  // --------------------------------------------------------------------------
   // 1. Dynamic Footer Year
+  // --------------------------------------------------------------------------
   const yearElement = document.getElementById("current-year");
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
@@ -32,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) {
-      metaTheme.setAttribute("content", theme === "dark" ? "#070b14" : "#f8fafc");
+      metaTheme.setAttribute("content", theme === "dark" ? "#090d16" : "#f8fafc");
     }
   };
 
@@ -53,7 +56,62 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --------------------------------------------------------------------------
-  // 3. Mobile Navigation Drawer
+  // 3. Reveal on Scroll Animation System
+  // --------------------------------------------------------------------------
+  const revealElements = document.querySelectorAll(".reveal-on-scroll");
+
+  const revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: "0px 0px -50px 0px",
+      threshold: 0.12,
+    }
+  );
+
+  revealElements.forEach((el) => revealObserver.observe(el));
+
+  // --------------------------------------------------------------------------
+  // 4. Floating Back to Top Button & Scroll Monitoring
+  // --------------------------------------------------------------------------
+  const backToTopButton = document.getElementById("backToTopButton");
+  const footerBackToTop = document.getElementById("footer-back-to-top");
+
+  const toggleBackToTop = () => {
+    if (!backToTopButton) return;
+    if (window.scrollY > 350) {
+      backToTopButton.classList.add("visible");
+    } else {
+      backToTopButton.classList.remove("visible");
+    }
+  };
+
+  window.addEventListener("scroll", toggleBackToTop, { passive: true });
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  if (backToTopButton) backToTopButton.addEventListener("click", scrollToTop);
+  if (footerBackToTop) {
+    footerBackToTop.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollToTop();
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 5. Mobile Navigation Drawer
   // --------------------------------------------------------------------------
   const mobileMenuBtn = document.getElementById("mobile-menu-btn");
   const closeDrawerBtn = document.getElementById("close-drawer-btn");
@@ -90,7 +148,36 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --------------------------------------------------------------------------
-  // 4. Hero Interactive Terminal Tabs
+  // 6. Active Navigation Link Spy on Scroll
+  // --------------------------------------------------------------------------
+  const sections = document.querySelectorAll("section[id]");
+  const desktopNavLinks = document.querySelectorAll(".nav-links .nav-item");
+
+  const observerOptions = {
+    root: null,
+    rootMargin: "-20% 0px -70% 0px",
+    threshold: 0,
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute("id");
+        desktopNavLinks.forEach((link) => {
+          if (link.getAttribute("href") === `#${id}`) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach((section) => sectionObserver.observe(section));
+
+  // --------------------------------------------------------------------------
+  // 7. Hero Interactive Terminal Tabs
   // --------------------------------------------------------------------------
   const terminalTabs = document.querySelectorAll(".terminal-tab");
   const tabArch = document.getElementById("tab-arch");
@@ -113,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --------------------------------------------------------------------------
-  // 5. Agentra Technical Implementation Code Tabs & Copy
+  // 8. Agentra Technical Code Tabs & Copy
   // --------------------------------------------------------------------------
   const codeTabBtns = document.querySelectorAll(".code-tab-btn");
   const codePanes = document.querySelectorAll(".code-snippet-pane");
@@ -158,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --------------------------------------------------------------------------
-  // 6. Live Coding Profiles Fetcher (LeetCode & GitHub)
+  // 9. Live Coding Profiles Fetcher (LeetCode & GitHub)
   // --------------------------------------------------------------------------
   const fetchLeetCodeStats = async () => {
     const totalSolvedEl = document.getElementById("lc-total-solved");
@@ -170,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const hardBar = document.getElementById("lc-hard-bar");
 
     try {
-      // Fetch from public LeetCode stats API proxy with timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 
@@ -195,10 +281,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     } catch (e) {
-      // Safe fallback
+      // Graceful fallback
     }
 
-    // Safe benchmark baseline display
     if (totalSolvedEl) totalSolvedEl.textContent = "200+";
     if (easyCountEl) easyCountEl.textContent = "70+";
     if (medCountEl) medCountEl.textContent = "110+";
@@ -232,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     } catch (e) {
-      // Safe fallback
+      // Graceful fallback
     }
 
     if (reposEl) reposEl.textContent = "12+";
@@ -243,71 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchGitHubStats();
 
   // --------------------------------------------------------------------------
-  // 7. Active Navigation Link Spy on Scroll
-  // --------------------------------------------------------------------------
-  const sections = document.querySelectorAll("section[id]");
-  const desktopNavLinks = document.querySelectorAll(".nav-links .nav-item");
-
-  const observerOptions = {
-    root: null,
-    rootMargin: "-20% 0px -70% 0px",
-    threshold: 0,
-  };
-
-  const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute("id");
-        desktopNavLinks.forEach((link) => {
-          if (link.getAttribute("href") === `#${id}`) {
-            link.classList.add("active");
-          } else {
-            link.classList.remove("active");
-          }
-        });
-      }
-    });
-  }, observerOptions);
-
-  sections.forEach((section) => sectionObserver.observe(section));
-
-  // --------------------------------------------------------------------------
-  // 8. Agentra Case Study Modal
-  // --------------------------------------------------------------------------
-  const caseStudyModal = document.getElementById("case-study-modal");
-  const modalBackdrop = document.getElementById("modal-backdrop");
-  const openCaseStudyBtn = document.getElementById("open-case-study-btn");
-  const closeModalBtn = document.getElementById("close-modal-btn");
-  const closeCaseStudyFooterBtn = document.getElementById("close-case-study-footer-btn");
-
-  const openModal = () => {
-    if (!caseStudyModal) return;
-    caseStudyModal.classList.add("open");
-    caseStudyModal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = () => {
-    if (!caseStudyModal) return;
-    caseStudyModal.classList.remove("open");
-    caseStudyModal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  };
-
-  if (openCaseStudyBtn) openCaseStudyBtn.addEventListener("click", openModal);
-  if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
-  if (closeCaseStudyFooterBtn) closeCaseStudyFooterBtn.addEventListener("click", closeModal);
-  if (modalBackdrop) modalBackdrop.addEventListener("click", closeModal);
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeModal();
-      closeDrawer();
-    }
-  });
-
-  // --------------------------------------------------------------------------
-  // 9. Copy Email to Clipboard Feature
+  // 10. Copy Email Feature
   // --------------------------------------------------------------------------
   const copyEmailBtn = document.getElementById("copy-email-btn");
   const contactEmailText = document.getElementById("contact-email-text");
@@ -338,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --------------------------------------------------------------------------
-  // 10. Production Contact Form Pipeline (/api/contact)
+  // 11. Contact Form & Email OTP Verification Pipeline
   // --------------------------------------------------------------------------
   const isLocalhost =
     window.location.hostname === "localhost" ||
@@ -350,48 +371,92 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_BASE_URL = isLocalhost
     ? ""
     : (window.PORTFOLIO_BACKEND_URL || (metaApiUrl && metaApiUrl !== "" ? metaApiUrl : "")).replace(/\/+$/, "");
+
+  // Form Elements
   const contactForm = document.getElementById("contact-form");
+  const nameInput = document.getElementById("contact-name");
+  const emailInput = document.getElementById("contact-email");
+  const subjectInput = document.getElementById("contact-subject");
+  const messageInput = document.getElementById("contact-message");
+  const gotchaInput = document.getElementById("contact-gotcha");
+
   const formStatus = document.getElementById("form-status");
   const sendBtn = document.getElementById("send-msg-btn");
   const btnText = document.getElementById("btn-text");
   const btnIcon = document.getElementById("btn-icon-plane");
   const btnSpinner = document.getElementById("btn-spinner");
 
-  if (contactForm) {
-    const nameInput = document.getElementById("contact-name");
-    const emailInput = document.getElementById("contact-email");
-    const subjectInput = document.getElementById("contact-subject");
-    const messageInput = document.getElementById("contact-message");
-    const gotchaInput = document.getElementById("contact-gotcha");
+  // OTP Verification Elements
+  const otpVerifyPanel = document.getElementById("otp-verify-panel");
+  const otpTargetEmailDisplay = document.getElementById("otp-target-email-display");
+  const otpInputField = document.getElementById("otp-input-field");
+  const otpError = document.getElementById("otp-error");
+  const otpStatusMessage = document.getElementById("otp-status-message");
+  const otpTimerCount = document.getElementById("otp-timer-count");
+  const otpTimerText = document.getElementById("otp-timer-text");
+  const resendOtpBtn = document.getElementById("resend-otp-btn");
+  const confirmOtpBtn = document.getElementById("confirm-otp-btn");
+  const confirmOtpBtnText = document.getElementById("confirm-otp-btn-text");
+  const confirmOtpSpinner = document.getElementById("confirm-otp-spinner");
+  const cancelOtpBtn = document.getElementById("cancel-otp-btn");
 
-    let isSubmitting = false;
+  // Success Confirmation Elements
+  const contactSuccessPanel = document.getElementById("contact-success-panel");
+  const sendAnotherBtn = document.getElementById("send-another-btn");
 
-    const clearErrors = () => {
-      document.querySelectorAll(".form-group").forEach((group) => {
-        group.classList.remove("has-error");
-      });
-      if (formStatus) {
-        formStatus.className = "form-status";
-        formStatus.textContent = "";
-        formStatus.innerHTML = "";
-      }
-    };
+  // Pipeline State
+  let cachedContactData = null;
+  let otpTimerInterval = null;
+  let isSendingOtp = false;
+  let isVerifyingOtp = false;
 
-    [nameInput, emailInput, messageInput, subjectInput].forEach((input) => {
-      if (input) {
-        input.addEventListener("input", () => {
-          input.closest(".form-group")?.classList.remove("has-error");
-        });
-      }
+  const clearFormErrors = () => {
+    document.querySelectorAll(".form-group").forEach((group) => {
+      group.classList.remove("has-error");
     });
+    if (formStatus) {
+      formStatus.className = "form-status";
+      formStatus.textContent = "";
+      formStatus.innerHTML = "";
+    }
+  };
 
+  [nameInput, emailInput, messageInput, subjectInput].forEach((input) => {
+    if (input) {
+      input.addEventListener("input", () => {
+        input.closest(".form-group")?.classList.remove("has-error");
+      });
+    }
+  });
+
+  // Start Resend Timer
+  const startOtpCountdown = (seconds = 60) => {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    let remaining = seconds;
+
+    if (otpTimerText) otpTimerText.classList.remove("is-hidden");
+    if (resendOtpBtn) resendOtpBtn.classList.add("is-hidden");
+    if (otpTimerCount) otpTimerCount.textContent = `${remaining}s`;
+
+    otpTimerInterval = setInterval(() => {
+      remaining -= 1;
+      if (otpTimerCount) otpTimerCount.textContent = `${remaining}s`;
+
+      if (remaining <= 0) {
+        clearInterval(otpTimerInterval);
+        if (otpTimerText) otpTimerText.classList.add("is-hidden");
+        if (resendOtpBtn) resendOtpBtn.classList.remove("is-hidden");
+      }
+    }, 1000);
+  };
+
+  // STEP 1: Handle Initial Form Submit -> Trigger OTP Email
+  if (contactForm) {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (isSendingOtp) return;
 
-      // Prevent duplicate submissions while in-flight
-      if (isSubmitting) return;
-
-      clearErrors();
+      clearFormErrors();
 
       let hasError = false;
       const name = nameInput?.value.trim() || "";
@@ -400,20 +465,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const message = messageInput?.value.trim() || "";
       const gotcha = gotchaInput?.value || "";
 
-      // Client-side Validation: Name
+      // Client-Side Validation
       if (!name || name.length < 2) {
         nameInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
       }
 
-      // Client-side Validation: Email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!email || !emailRegex.test(email)) {
         emailInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
       }
 
-      // Client-side Validation: Message
       if (!message || message.length < 5) {
         messageInput?.closest(".form-group")?.classList.add("has-error");
         hasError = true;
@@ -428,14 +491,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Enter Loading State
-      isSubmitting = true;
+      isSendingOtp = true;
       if (sendBtn) sendBtn.disabled = true;
-      if (btnText) btnText.textContent = "Sending...";
+      if (btnText) btnText.textContent = "Sending Verification Code...";
       if (btnIcon) btnIcon.style.display = "none";
       if (btnSpinner) btnSpinner.classList.remove("is-hidden");
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/contact`, {
+        const response = await fetch(`${API_BASE_URL}/api/contact/send-otp`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -453,48 +516,232 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json().catch(() => ({}));
 
         if (response.ok && result.success) {
-          // Success State
-          if (formStatus) {
-            formStatus.className = "form-status success";
-            formStatus.innerHTML = `
-              <strong>✓ Message sent successfully!</strong><br>
-              I'll get back to you soon.
-            `;
+          // Cache form data for OTP step
+          cachedContactData = { name, email, subject, message, _gotcha: gotcha };
+
+          // Transition to OTP Verification State
+          contactForm.classList.add("is-hidden");
+          if (otpVerifyPanel) otpVerifyPanel.classList.remove("is-hidden");
+          if (otpTargetEmailDisplay) otpTargetEmailDisplay.textContent = email;
+          if (otpInputField) {
+            otpInputField.value = "";
+            otpInputField.focus();
           }
-          contactForm.reset();
+
+          if (otpStatusMessage) {
+            otpStatusMessage.className = "otp-status-message success";
+            otpStatusMessage.textContent = result.message || "A 6-digit verification code was sent to your email.";
+          }
+
+          startOtpCountdown(60);
         } else {
-          // API Validation, Rate Limit, or Server Error
           if (formStatus) {
             formStatus.className = "form-status error";
-            const errDetail = result.message || (result.errors && result.errors[0]?.msg) || "Please try again or email me directly.";
-            formStatus.innerHTML = `
-              <strong>${escapeHtml(errDetail)}</strong>
-            `;
+            const errDetail = result.message || (result.errors && result.errors[0]?.msg) || "Failed to send verification code. Please try again.";
+            formStatus.innerHTML = `<strong>${escapeHtml(errDetail)}</strong>`;
           }
         }
       } catch (err) {
-        console.error("Contact Form Submission Error:", err);
-        // Network or Server Offline Failure State
+        console.error("OTP Send Error:", err);
         if (formStatus) {
           formStatus.className = "form-status error";
           formStatus.innerHTML = `
-            <strong>Unable to connect to contact server.</strong><br>
+            <strong>Unable to reach server.</strong><br>
             Please check your connection or <a href="mailto:aryan21sharma04@gmail.com" style="color: inherit; text-decoration: underline;">email me directly</a>.
           `;
         }
       } finally {
-        // Restore button state
-        isSubmitting = false;
+        isSendingOtp = false;
         if (sendBtn) sendBtn.disabled = false;
-        if (btnText) btnText.textContent = "Send Message";
+        if (btnText) btnText.textContent = "Verify Email & Send Message";
         if (btnIcon) btnIcon.style.display = "block";
         if (btnSpinner) btnSpinner.classList.add("is-hidden");
       }
     });
   }
 
+  // STEP 2: Handle Resend OTP Code
+  if (resendOtpBtn) {
+    resendOtpBtn.addEventListener("click", async () => {
+      if (!cachedContactData || isSendingOtp) return;
+
+      resendOtpBtn.textContent = "Sending...";
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/contact/send-otp`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(cachedContactData),
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.success) {
+          if (otpStatusMessage) {
+            otpStatusMessage.className = "otp-status-message success";
+            otpStatusMessage.textContent = "A fresh 6-digit code has been sent to your email!";
+          }
+          startOtpCountdown(60);
+        } else {
+          if (otpStatusMessage) {
+            otpStatusMessage.className = "otp-status-message error";
+            otpStatusMessage.textContent = result.message || "Failed to resend code. Please wait a moment.";
+          }
+        }
+      } catch (e) {
+        if (otpStatusMessage) {
+          otpStatusMessage.className = "otp-status-message error";
+          otpStatusMessage.textContent = "Network error. Please try again.";
+        }
+      } finally {
+        resendOtpBtn.textContent = "Resend Code";
+      }
+    });
+  }
+
+  // Handle Cancel / Edit Email
+  if (cancelOtpBtn) {
+    cancelOtpBtn.addEventListener("click", () => {
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      if (otpVerifyPanel) otpVerifyPanel.classList.add("is-hidden");
+      if (contactForm) contactForm.classList.remove("is-hidden");
+    });
+  }
+
+  // STEP 3: Handle Confirm OTP & Deliver Message
+  if (confirmOtpBtn && otpInputField) {
+    // Restrict input to digits only & auto-submit on 6 digits
+    otpInputField.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/\D/g, "");
+      otpInputField.closest(".form-group")?.classList.remove("has-error");
+    });
+
+    otpInputField.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        confirmOtpBtn.click();
+      }
+    });
+
+    confirmOtpBtn.addEventListener("click", async () => {
+      if (!cachedContactData || isVerifyingOtp) return;
+
+      const otp = otpInputField.value.trim();
+      if (!otp || otp.length !== 6) {
+        otpInputField.closest(".form-group")?.classList.add("has-error");
+        if (otpError) otpError.textContent = "Please enter all 6 digits of the verification code.";
+        return;
+      }
+
+      isVerifyingOtp = true;
+      confirmOtpBtn.disabled = true;
+      if (confirmOtpBtnText) confirmOtpBtnText.textContent = "Verifying & Sending...";
+      if (confirmOtpSpinner) confirmOtpSpinner.classList.remove("is-hidden");
+
+      if (otpStatusMessage) {
+        otpStatusMessage.className = "otp-status-message";
+        otpStatusMessage.textContent = "";
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/contact/verify-and-send`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            ...cachedContactData,
+            otp: otp,
+          }),
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.success) {
+          // Success State Transition
+          if (otpTimerInterval) clearInterval(otpTimerInterval);
+          if (otpVerifyPanel) otpVerifyPanel.classList.add("is-hidden");
+          if (contactSuccessPanel) contactSuccessPanel.classList.remove("is-hidden");
+          if (contactForm) contactForm.reset();
+          cachedContactData = null;
+        } else {
+          if (otpStatusMessage) {
+            otpStatusMessage.className = "otp-status-message error";
+            const errDetail = result.message || "Invalid or expired verification code. Please check your email.";
+            otpStatusMessage.textContent = errDetail;
+          }
+          otpInputField.closest(".form-group")?.classList.add("has-error");
+          otpInputField.select();
+        }
+      } catch (err) {
+        console.error("Verification error:", err);
+        if (otpStatusMessage) {
+          otpStatusMessage.className = "otp-status-message error";
+          otpStatusMessage.textContent = "Unable to verify code due to connection error. Please try again.";
+        }
+      } finally {
+        isVerifyingOtp = false;
+        confirmOtpBtn.disabled = false;
+        if (confirmOtpBtnText) confirmOtpBtnText.textContent = "Confirm & Send Message";
+        if (confirmOtpSpinner) confirmOtpSpinner.classList.add("is-hidden");
+      }
+    });
+  }
+
+  // Handle "Send Another Message" Reset
+  if (sendAnotherBtn) {
+    sendAnotherBtn.addEventListener("click", () => {
+      if (contactSuccessPanel) contactSuccessPanel.classList.add("is-hidden");
+      if (otpVerifyPanel) otpVerifyPanel.classList.add("is-hidden");
+      if (contactForm) {
+        contactForm.classList.remove("is-hidden");
+        contactForm.reset();
+        clearFormErrors();
+      }
+    });
+  }
+
   // --------------------------------------------------------------------------
-  // 11. Secure Admin Messages Portal Logic
+  // 12. Agentra Case Study Modal
+  // --------------------------------------------------------------------------
+  const caseStudyModal = document.getElementById("case-study-modal");
+  const modalBackdrop = document.getElementById("modal-backdrop");
+  const openCaseStudyBtn = document.getElementById("open-case-study-btn");
+  const closeModalBtn = document.getElementById("close-modal-btn");
+  const closeCaseStudyFooterBtn = document.getElementById("close-case-study-footer-btn");
+
+  const openModal = () => {
+    if (!caseStudyModal) return;
+    caseStudyModal.classList.add("open");
+    caseStudyModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    if (!caseStudyModal) return;
+    caseStudyModal.classList.remove("open");
+    caseStudyModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  };
+
+  if (openCaseStudyBtn) openCaseStudyBtn.addEventListener("click", openModal);
+  if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+  if (closeCaseStudyFooterBtn) closeCaseStudyFooterBtn.addEventListener("click", closeModal);
+  if (modalBackdrop) modalBackdrop.addEventListener("click", closeModal);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+      closeDrawer();
+      closeAdminModal();
+    }
+  });
+
+  // --------------------------------------------------------------------------
+  // 13. Secure Admin Messages Portal Logic
   // --------------------------------------------------------------------------
   const adminModal = document.getElementById("admin-modal");
   const adminModalBackdrop = document.getElementById("admin-modal-backdrop");
@@ -539,7 +786,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!adminModal) return;
     adminModal.classList.add("active");
     adminModal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
+    document.body.style.overflow = "hidden";
 
     if (currentAdminKey) {
       showDashboard();
@@ -553,7 +800,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!adminModal) return;
     adminModal.classList.remove("active");
     adminModal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
   };
 
   const showAuth = () => {
@@ -577,9 +824,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
       e.preventDefault();
       openAdminModal();
-    }
-    if (e.key === "Escape" && adminModal?.classList.contains("active")) {
-      closeAdminModal();
     }
   });
 
@@ -766,7 +1010,6 @@ document.addEventListener("DOMContentLoaded", () => {
       detailReplyBtn.href = `mailto:${msg.email}?subject=Re:%20${encodeURIComponent(msg.subject || "Your Inquiry")}`;
     }
 
-    // Auto-update unread to read
     if (msg.status === "unread") {
       updateStatus(msg._id, "read");
     }
@@ -825,7 +1068,6 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ status }),
       });
       if (res.ok) {
-        const updated = await res.json();
         if (selectedMessage && selectedMessage._id === id) {
           selectedMessage.status = status;
         }
@@ -846,4 +1088,3 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 });
-
