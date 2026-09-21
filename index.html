@@ -208,7 +208,7 @@
     <!-- HERO SECTION -->
     <section class="hero" id="hero">
       <div class="container hero-container">
-        <div class="hero-left reveal-on-scroll">
+        <div class="hero-content reveal-on-scroll">
           <div class="hero-eyebrow">
             <span class="status-pulse"></span>
             <span>Available for SDE Roles &amp; Internships</span>
@@ -286,64 +286,6 @@
             <span class="hero-pill">LangGraph &amp; AI Agents</span>
             <span class="hero-pill">System Architecture</span>
             <span class="hero-pill">C++ &amp; DSA</span>
-          </div>
-        </div>
-
-        <!-- Hero Right: Interactive Developer & AI Architecture Visual -->
-        <div class="hero-right reveal-on-scroll">
-          <div class="terminal-card" id="hero-terminal">
-            <div class="terminal-header">
-              <div class="terminal-dots">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-              </div>
-              <div class="terminal-tabs">
-                <button class="terminal-tab active" data-tab="arch">agent_orchestrator.ts</button>
-                <button class="terminal-tab" data-tab="stack">stack_config.json</button>
-              </div>
-            </div>
-            <div class="terminal-body" id="tab-arch">
-              <pre><code><span class="c-comment">// Multi-Agent Orchestration &amp; RAG Flow</span>
-<span class="c-keyword">import</span> { <span class="c-var">StateGraph</span>, <span class="c-var">END</span> } <span class="c-keyword">from</span> <span class="c-string">"@langchain/langgraph"</span>;
-<span class="c-keyword">import</span> { <span class="c-var">GeminiModel</span>, <span class="c-var">GroqRouter</span> } <span class="c-keyword">from</span> <span class="c-string">"agentra-core"</span>;
-
-<span class="c-keyword">const</span> <span class="c-fn">orchestrateWorkflow</span> = <span class="c-keyword">async</span> (task: <span class="c-var">UserPrompt</span>) =&gt; {
-  <span class="c-keyword">const</span> plan = <span class="c-keyword">await</span> <span class="c-fn">decomposeTask</span>(task);
-  <span class="c-keyword">const</span> agent = <span class="c-fn">selectOptimalAgent</span>({
-    complexity: plan.depth,
-    budget: <span class="c-string">"token_optimized"</span>,
-    routing: [<span class="c-string">"search"</span>, <span class="c-string">"code"</span>, <span class="c-string">"rag"</span>]
-  });
-
-  <span class="c-keyword">return</span> agent.<span class="c-fn">executeWithMemory</span>(plan);
-};</code></pre>
-            </div>
-            <div class="terminal-body is-hidden" id="tab-stack">
-              <pre><code>{
-  <span class="c-keyword">"engineer"</span>: <span class="c-string">"Aryan Sharma"</span>,
-  <span class="c-keyword">"domain"</span>: <span class="c-string">"https://aryansharma.dev"</span>,
-  <span class="c-keyword">"degree"</span>: <span class="c-string">"B.Tech CSE (2023 - 2027)"</span>,
-  <span class="c-keyword">"institution"</span>: <span class="c-string">"KIET Group of Institutions"</span>,
-  <span class="c-keyword">"coreStack"</span>: [<span class="c-string">"React"</span>, <span class="c-string">"Node.js"</span>, <span class="c-string">"MongoDB"</span>, <span class="c-string">"LangGraph"</span>],
-  <span class="c-keyword">"specialization"</span>: <span class="c-string">"Scalable Backends &amp; AI Systems"</span>,
-  <span class="c-keyword">"status"</span>: <span class="c-string">"Available for SDE Roles"</span>
-}</code></pre>
-            </div>
-            <div class="terminal-footer">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Runtime</span>
-                <span class="telemetry-val">Node.js / V8</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Status</span>
-                <span class="telemetry-val text-success">&#9679; Active</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Location</span>
-                <span class="telemetry-val">Ghaziabad, India</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1521,13 +1463,15 @@
         <div class="footer-brand">
           <span class="brand-name">Aryan Sharma</span>
         </div>
-        <p class="footer-tagline">
-          SDE Aspirant &bull; MERN Stack Developer &bull; Building Scalable AI-Powered Applications
+        <p class="footer-mission">
+          Dedicated to crafting robust full-stack architectures, modern MERN solutions, and intelligent AI-powered applications. Driven by curiosity, engineering discipline, and continuous learning.
         </p>
-        <p class="footer-copy">
-          &copy; <span id="current-year">2026</span> Aryan Sharma. All rights reserved. &bull; <a
-            href="https://aryansharma.dev" class="footer-domain-link">aryansharma.dev</a>
-        </p>
+        <div class="footer-focus-tags">
+          <span class="footer-pill">Full-Stack Development</span>
+          <span class="footer-pill">MERN Stack</span>
+          <span class="footer-pill">AI Systems</span>
+          <span class="footer-pill">Building &amp; Learning</span>
+        </div>
       </div>
 
       <div class="footer-right">

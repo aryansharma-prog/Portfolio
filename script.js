@@ -177,27 +177,29 @@ document.addEventListener("DOMContentLoaded", () => {
   sections.forEach((section) => sectionObserver.observe(section));
 
   // --------------------------------------------------------------------------
-  // 7. Hero Interactive Terminal Tabs
+  // 7. Hero Interactive Terminal Tabs (Guarded)
   // --------------------------------------------------------------------------
   const terminalTabs = document.querySelectorAll(".terminal-tab");
   const tabArch = document.getElementById("tab-arch");
   const tabStack = document.getElementById("tab-stack");
 
-  terminalTabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      terminalTabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
+  if (terminalTabs && terminalTabs.length > 0) {
+    terminalTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        terminalTabs.forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
 
-      const targetTab = tab.getAttribute("data-tab");
-      if (targetTab === "arch") {
-        if (tabArch) tabArch.classList.remove("is-hidden");
-        if (tabStack) tabStack.classList.add("is-hidden");
-      } else if (targetTab === "stack") {
-        if (tabArch) tabArch.classList.add("is-hidden");
-        if (tabStack) tabStack.classList.remove("is-hidden");
-      }
+        const targetTab = tab.getAttribute("data-tab");
+        if (targetTab === "arch") {
+          if (tabArch) tabArch.classList.remove("is-hidden");
+          if (tabStack) tabStack.classList.add("is-hidden");
+        } else if (targetTab === "stack") {
+          if (tabArch) tabArch.classList.add("is-hidden");
+          if (tabStack) tabStack.classList.remove("is-hidden");
+        }
+      });
     });
-  });
+  }
 
   // --------------------------------------------------------------------------
   // 8. Agentra Technical Code Tabs & Copy
