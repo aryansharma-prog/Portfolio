@@ -936,7 +936,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* --------------------------------------------------------------------------
-   8. Featured Project — CortexAI
+   8. Featured Project — Agentra
    -------------------------------------------------------------------------- */
 .featured-badge {
   display: inline-flex;
@@ -957,17 +957,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .cortex-showcase {
   max-width: 1080px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .cortex-main-card {
   background: var(--gradient-cortex), var(--bg-card);
   border: 1px solid var(--border-highlight);
   border-radius: var(--radius-xl);
-  padding: clamp(1.75rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 3.5vw, 3rem);
   box-shadow: var(--shadow-glow), var(--shadow-lg);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .cortex-main-card::before {
@@ -987,11 +992,13 @@ h1, h2, h3, h4, h5, h6 {
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 .cortex-actions-top {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.65rem;
 }
 
@@ -999,13 +1006,16 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  max-width: 100%;
 }
 
 .cortex-description {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   color: var(--text-secondary);
-  line-height: 1.8;
+  line-height: 1.75;
   margin-bottom: 1.75rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Quantified Metrics Grid */
@@ -1014,6 +1024,8 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .metric-card {
@@ -1024,6 +1036,10 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
   transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -1038,21 +1054,26 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
   color: var(--color-primary);
   line-height: 1.2;
+  word-break: break-word;
 }
 
 .metric-label {
   font-size: 0.8rem;
   color: var(--text-muted);
   line-height: 1.45;
+  word-break: break-word;
 }
 
-/* CortexAI System Architecture Visualizer Flow */
+/* Agentra System Architecture Visualizer Flow */
 .arch-section-box {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   margin-bottom: 2rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .subhead {
@@ -1069,7 +1090,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .arch-pipeline-row2 {
@@ -1080,12 +1103,13 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
-  padding: 0.85rem 1rem;
-  flex: 1;
+  padding: 0.85rem 0.9rem;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   min-width: 0;
+  box-sizing: border-box;
   transition: all var(--transition-fast);
 }
 
@@ -1107,24 +1131,32 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-chip);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.node-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .node-info strong {
   display: block;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .node-info span {
   display: block;
   font-size: 0.72rem;
   color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .arch-arrow {
@@ -1132,6 +1164,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   font-size: 1.1rem;
   flex-shrink: 0;
+  text-align: center;
 }
 
 /* Code Preview Box with Tabs */
@@ -2540,6 +2573,20 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .arch-pipeline-diagram {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .arch-arrow {
+    display: none;
+  }
+
+  .arch-step-node {
+    width: 100%;
+  }
+
   .live-stats-dashboard {
     grid-template-columns: 1fr;
   }
@@ -2628,12 +2675,19 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .arch-pipeline-diagram {
+    display: flex;
     flex-direction: column;
+    gap: 0.5rem;
   }
 
   .arch-arrow {
+    display: block;
     transform: rotate(90deg);
-    margin: 0.25rem 0;
+    margin: 0.25rem auto;
+  }
+
+  .arch-step-node {
+    width: 100%;
   }
 
   .sys-node-row {
@@ -2642,7 +2696,7 @@ h1, h2, h3, h4, h5, h6 {
 
   .sys-flow-arrow {
     transform: rotate(90deg);
-    margin: 0.25rem 0;
+    margin: 0.25rem auto;
   }
 }
 
@@ -2685,6 +2739,7 @@ h1, h2, h3, h4, h5, h6 {
   .github-stats-grid {
     grid-template-columns: 1fr;
   }
+}
 /* --------------------------------------------------------------------------
    16. Direct Email Fallback & Form Refinements
    -------------------------------------------------------------------------- */

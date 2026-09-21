@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --------------------------------------------------------------------------
-  // 5. CortexAI Technical Implementation Code Tabs & Copy
+  // 5. Agentra Technical Implementation Code Tabs & Copy
   // --------------------------------------------------------------------------
   const codeTabBtns = document.querySelectorAll(".code-tab-btn");
   const codePanes = document.querySelectorAll(".code-snippet-pane");
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
   sections.forEach((section) => sectionObserver.observe(section));
 
   // --------------------------------------------------------------------------
-  // 8. CortexAI Case Study Modal
+  // 8. Agentra Case Study Modal
   // --------------------------------------------------------------------------
   const caseStudyModal = document.getElementById("case-study-modal");
   const modalBackdrop = document.getElementById("modal-backdrop");
