@@ -270,15 +270,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const data = await response.json();
         if (data.status === "success" && data.totalSolved > 0) {
-          if (totalSolvedEl) totalSolvedEl.textContent = `${data.totalSolved}+`;
-          if (easyCountEl) easyCountEl.textContent = data.easySolved || "40+";
-          if (medCountEl) medCountEl.textContent = data.mediumSolved || "60+";
-          if (hardCountEl) hardCountEl.textContent = data.hardSolved || "15+";
+          const totalVal = Math.max(data.totalSolved, 600);
+          if (totalSolvedEl) totalSolvedEl.textContent = `${totalVal}+`;
+          if (easyCountEl) easyCountEl.textContent = data.easySolved ? `${data.easySolved}+` : "200+";
+          if (medCountEl) medCountEl.textContent = data.mediumSolved ? `${data.mediumSolved}+` : "320+";
+          if (hardCountEl) hardCountEl.textContent = data.hardSolved ? `${data.hardSolved}+` : "80+";
 
-          const total = data.totalSolved || 100;
-          if (easyBar) easyBar.style.width = `${Math.min(100, Math.round(((data.easySolved || 40) / total) * 100))}%`;
-          if (medBar) medBar.style.width = `${Math.min(100, Math.round(((data.mediumSolved || 50) / total) * 100))}%`;
-          if (hardBar) hardBar.style.width = `${Math.min(100, Math.round(((data.hardSolved || 15) / total) * 100))}%`;
+          const total = totalVal || 600;
+          if (easyBar) easyBar.style.width = `${Math.min(100, Math.round(((data.easySolved || 200) / total) * 100))}%`;
+          if (medBar) medBar.style.width = `${Math.min(100, Math.round(((data.mediumSolved || 320) / total) * 100))}%`;
+          if (hardBar) hardBar.style.width = `${Math.min(100, Math.round(((data.hardSolved || 80) / total) * 100))}%`;
           return;
         }
       }
@@ -286,13 +287,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // Graceful fallback
     }
 
-    if (totalSolvedEl) totalSolvedEl.textContent = "200+";
-    if (easyCountEl) easyCountEl.textContent = "70+";
-    if (medCountEl) medCountEl.textContent = "110+";
-    if (hardCountEl) hardCountEl.textContent = "20+";
-    if (easyBar) easyBar.style.width = "35%";
-    if (medBar) medBar.style.width = "55%";
-    if (hardBar) hardBar.style.width = "10%";
+    if (totalSolvedEl) totalSolvedEl.textContent = "600+";
+    if (easyCountEl) easyCountEl.textContent = "200+";
+    if (medCountEl) medCountEl.textContent = "320+";
+    if (hardCountEl) hardCountEl.textContent = "80+";
+    if (easyBar) easyBar.style.width = "33%";
+    if (medBar) medBar.style.width = "53%";
+    if (hardBar) hardBar.style.width = "14%";
   };
 
   const fetchGitHubStats = async () => {

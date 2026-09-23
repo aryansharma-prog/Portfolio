@@ -42,6 +42,8 @@ async function runTests() {
     assert.ok(html.includes("Prefer email?"), "Missing fallback email text in HTML");
     assert.ok(html.includes('id="admin-modal"'), "Missing #admin-modal in HTML");
     assert.ok(!html.includes("Namasté"), "Must NOT contain Namasté greeting");
+    assert.ok(html.includes("600+"), "Missing 600+ DSA problem count in HTML");
+    assert.ok(html.includes("8.1/10"), "Missing 8.1/10 CGPA in HTML");
   });
 
   // 3. Step 1: Send OTP with valid email
