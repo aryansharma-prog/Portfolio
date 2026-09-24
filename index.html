@@ -492,151 +492,263 @@
               </div>
 
               <!-- Agentra Architecture Flow Diagram -->
-              <div class="arch-section-box">
-                <h4 class="subhead">Agentra System Architecture &amp; Execution Pipeline</h4>
-                <div class="arch-pipeline-diagram">
-                  <div class="arch-step-node">
-                    <span class="node-badge">01</span>
-                    <div class="node-info">
-                      <strong>User Query</strong>
-                      <span>Multimodal &amp; natural language input</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node">
-                    <span class="node-badge">02</span>
-                    <div class="node-info">
-                      <strong>Task Analyzer</strong>
-                      <span>Complexity classification &amp; intent parsing</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node">
-                    <span class="node-badge">03</span>
-                    <div class="node-info">
-                      <strong>Recursive Decomposition</strong>
-                      <span>Hierarchical subtask DAG generation</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node">
-                    <span class="node-badge">04</span>
-                    <div class="node-info">
-                      <strong>Agent Selection</strong>
-                      <span>Dynamic routing by domain &amp; budget</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="arch-pipeline-diagram arch-pipeline-row2">
-                  <div class="arch-step-node">
-                    <span class="node-badge">05</span>
-                    <div class="node-info">
-                      <strong>Specialized Agents</strong>
-                      <span>Web, Code, PDF RAG, Image &amp; Vision</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node">
-                    <span class="node-badge">06</span>
-                    <div class="node-info">
-                      <strong>Shared Context</strong>
-                      <span>Redis state + Pinecone vector memory</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node">
-                    <span class="node-badge">07</span>
-                    <div class="node-info">
-                      <strong>Trust &amp; Verification</strong>
-                      <span>Critic evaluator &amp; hallucination check</span>
-                    </div>
-                  </div>
-                  <div class="arch-arrow">&rarr;</div>
-                  <div class="arch-step-node node-highlight">
-                    <span class="node-badge">08</span>
-                    <div class="node-info">
-                      <strong>Final Response</strong>
-                      <span>Structured output with source citations</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Technical Implementation: Interactive Code Preview -->
-              <div class="code-preview-box">
-                <div class="code-preview-header">
-                  <h4 class="subhead-inline">Technical Implementation (TypeScript)</h4>
-                  <div class="code-tabs-nav">
-                    <button class="code-tab-btn active" data-code-tab="state">Agent State</button>
-                    <button class="code-tab-btn" data-code-tab="routing">Routing</button>
-                    <button class="code-tab-btn" data-code-tab="decomp">Task Decomposition</button>
-                    <button class="code-tab-btn" data-code-tab="trust">Trust Evaluation</button>
-                  </div>
-                  <button class="btn-copy-code" id="copy-code-btn" title="Copy code snippet">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              <div class="agentra-arch-box">
+                <div class="agentra-arch-header">
+                  <div class="arch-header-badge">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                      <polyline points="2 17 12 22 22 17"></polyline>
+                      <polyline points="2 12 12 17 22 12"></polyline>
                     </svg>
-                    <span id="code-copy-text">Copy</span>
-                  </button>
+                    <span>Architecture Flow</span>
+                  </div>
+                  <h4 class="agentra-arch-title">Agentra System Execution Architecture</h4>
+                  <p class="agentra-arch-subtitle">Dynamic task decomposition, complexity routing &amp; verified multi-agent synthesis</p>
                 </div>
 
-                <div class="code-preview-content">
-                  <pre class="code-snippet-pane active" id="code-pane-state"><code><span class="c-comment">// Core State Schema for Multi-Agent Workflow</span>
-<span class="c-keyword">export interface</span> <span class="c-var">AgentState</span> {
-  task: <span class="c-var">string</span>;
-  complexity: <span class="c-var">number</span>;
-  subtasks: <span class="c-var">SubTask</span>[];
-  selectedAgents: <span class="c-var">AgentIdentifier</span>[];
-  sharedContext: <span class="c-var">SharedNotebook</span>;
-  tokenBudget: <span class="c-var">number</span>;
-  tokensConsumed: <span class="c-var">number</span>;
-  trustScore?: <span class="c-var">number</span>;
-  status: <span class="c-string">"planning"</span> | <span class="c-string">"executing"</span> | <span class="c-string">"verifying"</span> | <span class="c-string">"completed"</span>;
-}</code></pre>
+                <div class="agentra-flow-canvas">
+                  <!-- 1. USER QUERY -->
+                  <div class="flow-node-single flow-node-entry">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">USER QUERY</strong>
+                      <span class="flow-node-desc">Natural language or multimodal request</span>
+                    </div>
+                  </div>
 
-                  <pre class="code-snippet-pane is-hidden" id="code-pane-routing"><code><span class="c-comment">// Dynamic Model Routing &amp; Adaptive Escalation</span>
-<span class="c-keyword">export const</span> <span class="c-fn">routeToOptimalModel</span> = (state: <span class="c-var">AgentState</span>) =&gt; {
-  <span class="c-keyword">if</span> (state.complexity &lt; 0.4 &amp;&amp; state.tokenBudget &lt; 2000) {
-    <span class="c-comment">// Fast inference for classification &amp; lightweight queries</span>
-    <span class="c-keyword">return</span> <span class="c-fn">invokeGroqLlama</span>(state.subtasks);
-  }
-  <span class="c-comment">// Deep multimodal reasoning &amp; multi-source synthesis</span>
-  <span class="c-keyword">return</span> <span class="c-fn">invokeGeminiPro</span>(state.subtasks, {
-    context: state.sharedContext,
-    temperature: 0.2
-  });
-};</code></pre>
+                  <!-- Connector Arrow -->
+                  <div class="flow-arrow-down">
+                    <span class="flow-arrow-line"></span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                  </div>
 
-                  <pre class="code-snippet-pane is-hidden" id="code-pane-decomp"><code><span class="c-comment">// Recursive Task Decomposition DAG Generator</span>
-<span class="c-keyword">export const</span> <span class="c-fn">decomposeTask</span> = <span class="c-keyword">async</span> (prompt: <span class="c-var">string</span>): <span class="c-var">Promise</span>&lt;<span class="c-var">SubTask</span>[]&gt; =&gt; {
-  <span class="c-keyword">const</span> plan = <span class="c-keyword">await</span> plannerAgent.<span class="c-fn">generatePlan</span>({
-    query: prompt,
-    maxDepth: 3,
-    allowParallelExecution: <span class="c-keyword">true</span>
-  });
+                  <!-- 2. TASK ANALYZER -->
+                  <div class="flow-node-single">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">TASK ANALYZER</strong>
+                      <span class="flow-node-desc">Intent parsing &amp; goal decomposition</span>
+                    </div>
+                  </div>
 
-  <span class="c-keyword">return</span> plan.subtasks.<span class="c-fn">map</span>((subtask) =&gt; ({
-    ...subtask,
-    assignedAgent: <span class="c-fn">resolveSpecialist</span>(subtask.domain)
-  }));
-};</code></pre>
+                  <!-- Connector Arrow -->
+                  <div class="flow-arrow-down">
+                    <span class="flow-arrow-line"></span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                  </div>
 
-                  <pre class="code-snippet-pane is-hidden" id="code-pane-trust"><code><span class="c-comment">// Self-Evaluating Critic Agent Verification Loop</span>
-<span class="c-keyword">export const</span> <span class="c-fn">evaluateTrustScore</span> = <span class="c-keyword">async</span> (output: <span class="c-var">AgentOutput</span>): <span class="c-var">Promise</span>&lt;<span class="c-var">VerificationResult</span>&gt; =&gt; {
-  <span class="c-keyword">const</span> critique = <span class="c-keyword">await</span> criticAgent.<span class="c-fn">verify</span>({
-    claims: output.claims,
-    citations: output.retrievedSources,
-    codeExecutionPass: output.testSuiteResult
-  });
+                  <!-- 3. COMPLEXITY CLASSIFIER -->
+                  <div class="flow-node-single">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">COMPLEXITY CLASSIFIER</strong>
+                      <span class="flow-node-desc">Dynamic token &amp; latency budgeting</span>
+                    </div>
+                  </div>
 
-  <span class="c-keyword">return</span> {
-    isApproved: critique.score &gt;= 0.85,
-    confidence: critique.score,
-    feedback: critique.recommendations
-  };
-};</code></pre>
+                  <!-- Branch 1 Fork Connector (SVG) -->
+                  <div class="flow-connector-svg-wrap">
+                    <svg class="flow-tree-svg" viewBox="0 0 600 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M300 0 V14" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 14 H500" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="96,24 100,31 104,24" fill="currentColor" />
+                      <path d="M300 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="296,24 300,31 304,24" fill="currentColor" />
+                      <path d="M500 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="496,24 500,31 504,24" fill="currentColor" />
+                    </svg>
+                  </div>
+
+                  <!-- Branch 1: EASY | MEDIUM | COMPLEX -->
+                  <div class="flow-branch-grid">
+                    <div class="flow-branch-card branch-easy">
+                      <span class="branch-tag">EASY</span>
+                      <strong class="branch-label">Fast Direct Path</strong>
+                      <span class="branch-sub">Lightweight inference</span>
+                    </div>
+                    <div class="flow-branch-card branch-medium">
+                      <span class="branch-tag">MEDIUM</span>
+                      <strong class="branch-label">Multi-Step Flow</strong>
+                      <span class="branch-sub">Contextual retrieval</span>
+                    </div>
+                    <div class="flow-branch-card branch-complex">
+                      <span class="branch-tag">COMPLEX</span>
+                      <strong class="branch-label">Recursive DAG</strong>
+                      <span class="branch-sub">Full multi-agent loop</span>
+                    </div>
+                  </div>
+
+                  <!-- Branch 1 Join Connector (SVG) -->
+                  <div class="flow-connector-svg-wrap">
+                    <svg class="flow-tree-svg" viewBox="0 0 600 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M100 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M300 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M500 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 16 H500" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M300 16 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="296,24 300,31 304,24" fill="currentColor" />
+                    </svg>
+                  </div>
+
+                  <!-- 4. AGENT ROUTER -->
+                  <div class="flow-node-single">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">AGENT ROUTER</strong>
+                      <span class="flow-node-desc">Specialist agent &amp; model dispatching</span>
+                    </div>
+                  </div>
+
+                  <!-- Branch 2 Fork Connector (SVG) -->
+                  <div class="flow-connector-svg-wrap">
+                    <svg class="flow-tree-svg" viewBox="0 0 600 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M300 0 V14" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 14 H500" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="96,24 100,31 104,24" fill="currentColor" />
+                      <path d="M300 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="296,24 300,31 304,24" fill="currentColor" />
+                      <path d="M500 14 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="496,24 500,31 504,24" fill="currentColor" />
+                    </svg>
+                  </div>
+
+                  <!-- Branch 2: SEARCH | CODING | ANALYSIS -->
+                  <div class="flow-branch-grid">
+                    <div class="flow-branch-card branch-specialist">
+                      <div class="specialist-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                      </div>
+                      <span class="branch-tag">SEARCH</span>
+                      <strong class="branch-label">Search Agent</strong>
+                      <span class="branch-sub">Web &amp; vector RAG</span>
+                    </div>
+                    <div class="flow-branch-card branch-specialist">
+                      <div class="specialist-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="16 18 22 12 16 6"></polyline>
+                          <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                      </div>
+                      <span class="branch-tag">CODING</span>
+                      <strong class="branch-label">Coding Agent</strong>
+                      <span class="branch-sub">Sandbox &amp; synthesis</span>
+                    </div>
+                    <div class="flow-branch-card branch-specialist">
+                      <div class="specialist-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M18 20V10"></path>
+                          <path d="M12 20V4"></path>
+                          <path d="M6 20v-6"></path>
+                        </svg>
+                      </div>
+                      <span class="branch-tag">ANALYSIS</span>
+                      <strong class="branch-label">Analysis Agent</strong>
+                      <span class="branch-sub">Logic &amp; computation</span>
+                    </div>
+                  </div>
+
+                  <!-- Branch 2 Join Connector (SVG) -->
+                  <div class="flow-connector-svg-wrap">
+                    <svg class="flow-tree-svg" viewBox="0 0 600 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M100 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M300 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M500 0 V16" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M100 16 H500" stroke="currentColor" stroke-width="1.75" />
+                      <path d="M300 16 V26" stroke="currentColor" stroke-width="1.75" />
+                      <polygon points="296,24 300,31 304,24" fill="currentColor" />
+                    </svg>
+                  </div>
+
+                  <!-- 5. TRUST EVALUATION -->
+                  <div class="flow-node-single">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">TRUST EVALUATION</strong>
+                      <span class="flow-node-desc">Self-evaluating critic &amp; verification loop</span>
+                    </div>
+                  </div>
+
+                  <!-- Connector Arrow -->
+                  <div class="flow-arrow-down">
+                    <span class="flow-arrow-line"></span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                  </div>
+
+                  <!-- 6. FINAL RESPONSE -->
+                  <div class="flow-node-single flow-node-highlight">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">FINAL RESPONSE</strong>
+                      <span class="flow-node-desc">Synthesized output with source citations</span>
+                    </div>
+                  </div>
+
+                  <!-- Connector Arrow -->
+                  <div class="flow-arrow-down">
+                    <span class="flow-arrow-line"></span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                  </div>
+
+                  <!-- 7. USER -->
+                  <div class="flow-node-single flow-node-exit">
+                    <div class="flow-node-icon">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </div>
+                    <div class="flow-node-content">
+                      <strong class="flow-node-title">USER</strong>
+                      <span class="flow-node-desc">Accurate &amp; verified solution delivered</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 

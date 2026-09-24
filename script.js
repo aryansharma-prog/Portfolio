@@ -202,52 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --------------------------------------------------------------------------
-  // 8. Agentra Technical Code Tabs & Copy
-  // --------------------------------------------------------------------------
-  const codeTabBtns = document.querySelectorAll(".code-tab-btn");
-  const codePanes = document.querySelectorAll(".code-snippet-pane");
-  const copyCodeBtn = document.getElementById("copy-code-btn");
-  const codeCopyText = document.getElementById("code-copy-text");
-
-  codeTabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      codeTabBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const targetPaneId = `code-pane-${btn.getAttribute("data-code-tab")}`;
-      codePanes.forEach((pane) => {
-        if (pane.id === targetPaneId) {
-          pane.classList.remove("is-hidden");
-        } else {
-          pane.classList.add("is-hidden");
-        }
-      });
-    });
-  });
-
-  if (copyCodeBtn && codeCopyText) {
-    copyCodeBtn.addEventListener("click", async () => {
-      const activePane = document.querySelector(".code-snippet-pane:not(.is-hidden)");
-      if (!activePane) return;
-
-      const codeContent = activePane.innerText || activePane.textContent;
-      try {
-        await navigator.clipboard.writeText(codeContent);
-        codeCopyText.textContent = "Copied!";
-        setTimeout(() => {
-          codeCopyText.textContent = "Copy";
-        }, 2000);
-      } catch (err) {
-        codeCopyText.textContent = "Copied!";
-        setTimeout(() => {
-          codeCopyText.textContent = "Copy";
-        }, 2000);
-      }
-    });
-  }
-
-  // --------------------------------------------------------------------------
-  // 9. Live Coding Profiles Fetcher (LeetCode & GitHub)
+  // 8. Live Coding Profiles Fetcher (LeetCode & GitHub)
   // --------------------------------------------------------------------------
   const fetchLeetCodeStats = async () => {
     const totalSolvedEl = document.getElementById("lc-total-solved");
